@@ -24,3 +24,6 @@ The WebGL simulation serves as a direct, real-time solver for this PDE, projecte
 * **Visual Architecture:** Primes are rendered distinctly (Cyan for $+1$, Orange for $-1$) to illustrate the phase opposition driving the fluid advection.
 
 **Research Status:** This simulation is a rigorously defined classical fluid analogue. The question of whether the geometric constraints observed in this model correlate to the analytic zero-free regions of $L$-functions (via the Rankin-Selberg program) remains an open, unproven research inquiry.
+
+
+** SEE link: https://github.com/DULA2025/prime-inertia-engine/blob/main/Prime%20Inertia%20Engine%20(3D).html
