@@ -1,0 +1,509 @@
+{
+  "theta_series": {
+    "A2": {
+      "0": 1,
+      "1": 6,
+      "2": 0,
+      "3": 6,
+      "4": 6,
+      "5": 0,
+      "6": 0,
+      "7": 12,
+      "8": 0,
+      "9": 6,
+      "10": 0,
+      "11": 0,
+      "12": 6,
+      "13": 12,
+      "14": 0
+    },
+    "A3": {
+      "0": 1,
+      "1": 12,
+      "2": 6,
+      "3": 24,
+      "4": 12,
+      "5": 24,
+      "6": 8,
+      "7": 48,
+      "8": 6,
+      "9": 36,
+      "10": 24,
+      "11": 24,
+      "12": 24,
+      "13": 72,
+      "14": 0
+    },
+    "D4": {
+      "0": 1,
+      "1": 0,
+      "2": 24,
+      "3": 0,
+      "4": 24,
+      "5": 0,
+      "6": 96,
+      "7": 0,
+      "8": 24,
+      "9": 0,
+      "10": 144,
+      "11": 0,
+      "12": 96,
+      "13": 0,
+      "14": 192
+    },
+    "E8": {
+      "0": 1,
+      "1": 240,
+      "2": 2160,
+      "3": 6720,
+      "4": 17520,
+      "5": 30240,
+      "6": 60480,
+      "7": 82560,
+      "8": 140400,
+      "9": 181680,
+      "10": 272160,
+      "11": 319680,
+      "12": 490560,
+      "13": 527520,
+      "14": 743040
+    },
+    "Leech": {
+      "0": 1,
+      "1": 0,
+      "2": 196560,
+      "3": 16773120,
+      "4": 398034000,
+      "5": 4629381120,
+      "6": 34417656000
+    }
+  },
+  "weil_distributions": {
+    "A2": [
+      {
+        "sigma": 0.5,
+        "spectral": 2.586197197401385,
+        "archimedean": 0.25890111897858176,
+        "arithmetic": 0.18379415916542716,
+        "total": 3.028892475545394,
+        "positive": true
+      },
+      {
+        "sigma": 1.0,
+        "spectral": 5.680763903623372,
+        "archimedean": 0.488268005168965,
+        "arithmetic": 0.38489463593517315,
+        "total": 6.553926544727511,
+        "positive": true
+      },
+      {
+        "sigma": 2.0,
+        "spectral": 16.53092541648997,
+        "archimedean": 0.9030014377989886,
+        "arithmetic": 0.500064533930407,
+        "total": 17.93399138821937,
+        "positive": true
+      },
+      {
+        "sigma": 3.0,
+        "spectral": 46.32575187295645,
+        "archimedean": 1.278037457940746,
+        "arithmetic": 0.5286385621667896,
+        "total": 48.13242789306398,
+        "positive": true
+      },
+      {
+        "sigma": 5.0,
+        "spectral": 570.5059656906948,
+        "archimedean": 1.9213865334786147,
+        "arithmetic": 0.49579652041927913,
+        "total": 572.9231487445927,
+        "positive": true
+      }
+    ],
+    "A3": [
+      {
+        "sigma": 0.5,
+        "spectral": 2.586197197401385,
+        "archimedean": 0.2029311206926767,
+        "arithmetic": 0.05305884806443485,
+        "total": 2.8421871661584963,
+        "positive": true
+      },
+      {
+        "sigma": 1.0,
+        "spectral": 5.680763903623372,
+        "archimedean": 0.4156800886188131,
+        "arithmetic": 0.241053633368631,
+        "total": 6.337497625610816,
+        "positive": true
+      },
+      {
+        "sigma": 2.0,
+        "spectral": 16.53092541648997,
+        "archimedean": 0.8353921934828171,
+        "arithmetic": 0.3562344902419352,
+        "total": 17.722552100214724,
+        "positive": true
+      },
+      {
+        "sigma": 3.0,
+        "spectral": 46.32575187295645,
+        "archimedean": 1.2251496014093595,
+        "arithmetic": 0.38728989726862284,
+        "total": 47.93819137163443,
+        "positive": true
+      },
+      {
+        "sigma": 5.0,
+        "spectral": 570.5059656906948,
+        "archimedean": 1.8905750439917735,
+        "arithmetic": 0.3891062133853328,
+        "total": 572.7856469480719,
+        "positive": true
+      }
+    ],
+    "D4": [
+      {
+        "sigma": 0.5,
+        "spectral": 2.586197197401385,
+        "archimedean": 0.34865872403551906,
+        "arithmetic": -0.2561677968122073,
+        "total": 2.6786881246246965,
+        "positive": true
+      },
+      {
+        "sigma": 1.0,
+        "spectral": 5.680763903623372,
+        "archimedean": 0.6184185737572492,
+        "arithmetic": -1.3409836969134534,
+        "total": 4.958198780467168,
+        "positive": true
+      },
+      {
+        "sigma": 2.0,
+        "spectral": 16.53092541648997,
+        "archimedean": 1.0481367371329207,
+        "arithmetic": -6.282395652420778,
+        "total": 11.296666501202115,
+        "positive": true
+      },
+      {
+        "sigma": 3.0,
+        "spectral": 46.32575187295645,
+        "archimedean": 1.407966127486427,
+        "arithmetic": -18.847092346063853,
+        "total": 28.886625654379024,
+        "positive": true
+      },
+      {
+        "sigma": 5.0,
+        "spectral": 570.5059656906948,
+        "archimedean": 2.011922830852772,
+        "arithmetic": -58.26192706974032,
+        "total": 514.2559614518073,
+        "positive": true
+      }
+    ],
+    "E8": [
+      {
+        "sigma": 0.5,
+        "spectral": 2.586197197401385,
+        "archimedean": 0.5384497267278576,
+        "arithmetic": -0.2561677968122073,
+        "total": 2.8684791273170354,
+        "positive": true
+      },
+      {
+        "sigma": 1.0,
+        "spectral": 5.680763903623372,
+        "archimedean": 0.9542835728572765,
+        "arithmetic": -1.3409836969134534,
+        "total": 5.294063779567195,
+        "positive": true
+      },
+      {
+        "sigma": 2.0,
+        "spectral": 16.53092541648997,
+        "archimedean": 1.5870866147393132,
+        "arithmetic": -6.282395652420778,
+        "total": 11.835616378808506,
+        "positive": true
+      },
+      {
+        "sigma": 3.0,
+        "spectral": 46.32575187295645,
+        "archimedean": 2.075374671331715,
+        "arithmetic": -18.847092346063853,
+        "total": 29.554034198224315,
+        "positive": true
+      },
+      {
+        "sigma": 5.0,
+        "spectral": 570.5059656906948,
+        "archimedean": 2.8217590787566937,
+        "arithmetic": -58.26192706974032,
+        "total": 515.0657976997111,
+        "positive": true
+      }
+    ],
+    "Leech": [
+      {
+        "sigma": 0.5,
+        "spectral": 2.586197197401385,
+        "archimedean": 0.5384497267278576,
+        "arithmetic": -0.2561677968122073,
+        "total": 2.8684791273170354,
+        "positive": true
+      },
+      {
+        "sigma": 1.0,
+        "spectral": 5.680763903623372,
+        "archimedean": 0.9542835728572765,
+        "arithmetic": -1.3409836969134534,
+        "total": 5.294063779567195,
+        "positive": true
+      },
+      {
+        "sigma": 2.0,
+        "spectral": 16.53092541648997,
+        "archimedean": 1.5870866147393132,
+        "arithmetic": -6.282395652420778,
+        "total": 11.835616378808506,
+        "positive": true
+      },
+      {
+        "sigma": 3.0,
+        "spectral": 46.32575187295645,
+        "archimedean": 2.075374671331715,
+        "arithmetic": -18.847092346063853,
+        "total": 29.554034198224315,
+        "positive": true
+      },
+      {
+        "sigma": 5.0,
+        "spectral": 570.5059656906948,
+        "archimedean": 2.8217590787566937,
+        "arithmetic": -58.26192706974032,
+        "total": 515.0657976997111,
+        "positive": true
+      }
+    ]
+  },
+  "autocorrelation_tests": {
+    "A2": [
+      {
+        "sigma": 0.3,
+        "total": 1.3427841395602627,
+        "positive": true
+      },
+      {
+        "sigma": 0.5,
+        "total": 3.9210071101971726,
+        "positive": true
+      },
+      {
+        "sigma": 1.0,
+        "total": 18.118422816869717,
+        "positive": true
+      },
+      {
+        "sigma": 2.0,
+        "total": 142.814852381136,
+        "positive": true
+      },
+      {
+        "sigma": 3.0,
+        "total": 1084.7854652459325,
+        "positive": true
+      },
+      {
+        "sigma": 5.0,
+        "total": 162764.24205634076,
+        "positive": true
+      }
+    ],
+    "A3": [
+      {
+        "sigma": 0.3,
+        "total": 1.2592520856198415,
+        "positive": true
+      },
+      {
+        "sigma": 0.5,
+        "total": 3.7353485920961345,
+        "positive": true
+      },
+      {
+        "sigma": 1.0,
+        "total": 17.732924772480885,
+        "positive": true
+      },
+      {
+        "sigma": 2.0,
+        "total": 142.11385450489033,
+        "positive": true
+      },
+      {
+        "sigma": 3.0,
+        "total": 1083.9301603271022,
+        "positive": true
+      },
+      {
+        "sigma": 5.0,
+        "total": 162763.4996788979,
+        "positive": true
+      }
+    ],
+    "D4": [
+      {
+        "sigma": 0.3,
+        "total": 1.2357768702199332,
+        "positive": true
+      },
+      {
+        "sigma": 0.5,
+        "total": 3.2051896155800104,
+        "positive": true
+      },
+      {
+        "sigma": 1.0,
+        "total": 12.588863925581665,
+        "positive": true
+      },
+      {
+        "sigma": 2.0,
+        "total": 84.63835061298334,
+        "positive": true
+      },
+      {
+        "sigma": 3.0,
+        "total": 851.3648202852336,
+        "positive": true
+      },
+      {
+        "sigma": 5.0,
+        "total": 161979.8901925292,
+        "positive": true
+      }
+    ],
+    "E8": [
+      {
+        "sigma": 0.3,
+        "total": 1.3230694907924823,
+        "positive": true
+      },
+      {
+        "sigma": 0.5,
+        "total": 3.4310762115396103,
+        "positive": true
+      },
+      {
+        "sigma": 1.0,
+        "total": 13.354417864614783,
+        "positive": true
+      },
+      {
+        "sigma": 2.0,
+        "total": 86.93939267494737,
+        "positive": true
+      },
+      {
+        "sigma": 3.0,
+        "total": 855.4489247507488,
+        "positive": true
+      },
+      {
+        "sigma": 5.0,
+        "total": 161987.70554326853,
+        "positive": true
+      }
+    ],
+    "Leech": [
+      {
+        "sigma": 0.3,
+        "total": 1.3230694907924823,
+        "positive": true
+      },
+      {
+        "sigma": 0.5,
+        "total": 3.4310762115396103,
+        "positive": true
+      },
+      {
+        "sigma": 1.0,
+        "total": 13.354417864614783,
+        "positive": true
+      },
+      {
+        "sigma": 2.0,
+        "total": 86.93939267494737,
+        "positive": true
+      },
+      {
+        "sigma": 3.0,
+        "total": 855.4489247507488,
+        "positive": true
+      },
+      {
+        "sigma": 5.0,
+        "total": 161987.70554326853,
+        "positive": true
+      }
+    ]
+  },
+  "lattice_info": {
+    "A2": {
+      "dim": 2,
+      "roots": 6,
+      "det": 3,
+      "self_dual": "YES (up to sqrt(3))",
+      "conductor": 3,
+      "L_factor": "zeta(s) * L(s, chi_3)",
+      "chi_label": "chi_3"
+    },
+    "A3": {
+      "dim": 3,
+      "roots": 12,
+      "det": 4,
+      "self_dual": "NO (A3* = D3* = FCC dual)",
+      "conductor": 4,
+      "L_factor": "zeta(s) * L(s, chi_4)",
+      "chi_label": "chi_4"
+    },
+    "D4": {
+      "dim": 4,
+      "roots": 24,
+      "det": 4,
+      "self_dual": "NO (D4* includes half-integers)",
+      "conductor": 2,
+      "L_factor": "zeta(s) * zeta(s-1) * (Euler at 2)",
+      "chi_label": "trivial"
+    },
+    "E8": {
+      "dim": 8,
+      "roots": 240,
+      "det": 1,
+      "self_dual": "YES (unimodular)",
+      "conductor": 1,
+      "L_factor": "zeta(s) * zeta(s-1) * zeta(s-2) * zeta(s-3)",
+      "chi_label": "trivial"
+    },
+    "Leech": {
+      "dim": 24,
+      "roots": 0,
+      "det": 1,
+      "self_dual": "YES (unimodular)",
+      "conductor": 1,
+      "L_factor": "zeta(s) * zeta(s-1) * ... * zeta(s-11)",
+      "chi_label": "trivial"
+    }
+  },
+  "arithmetic_reductions": {
+    "A2": 7.95977460823752,
+    "A3": 5.670360638694705,
+    "D4": 100.0,
+    "E8": 100.0,
+    "Leech": 100
+  }
+}
