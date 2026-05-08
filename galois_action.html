@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Galois Action on Sun's Polynomial</title>
+    <style>
+        body {
+            margin: 0; overflow: hidden; background-color: #05050A;
+            color: #00FFFF; font-family: 'Courier New', Courier, monospace;
+        }
+        canvas { display: block; }
+        #ui-panel {
+            position: absolute; top: 20px; left: 20px; width: 340px;
+            background: rgba(10, 10, 15, 0.85); padding: 20px;
+            border: 1px solid #00FFFF; border-radius: 6px;
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.15);
+            backdrop-filter: blur(5px);
+        }
+        h2 { margin: 0 0 10px 0; font-size: 18px; text-transform: uppercase; letter-spacing: 1px; }
+        h3 { margin: 0 0 15px 0; font-size: 11px; color: #FF2266; font-weight: normal; }
+        select, button {
+            width: 100%; background: transparent; color: #00FFFF;
+            border: 1px solid #00FFFF; padding: 10px; font-family: inherit;
+            font-size: 14px; cursor: pointer; margin-bottom: 15px; transition: 0.2s;
+        }
+        select:hover, button:hover { background: rgba(0, 255, 255, 0.1); }
+        button:active { transform: scale(0.98); }
+        .data-row { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 13px; color: #ccc; }
+        .data-value { color: #fff; font-weight: bold; }
+        .highlight-cyan { color: #00FFFF; text-shadow: 0 0 5px #00FFFF; }
+        .highlight-magenta { color: #FF2266; text-shadow: 0 0 5px #FF2266; }
+    </style>
+</head>
+<body>
+
+    <div id="ui-panel">
+        <h2>Prime Inertia Engine</h2>
+        <h3>Galois Action: ℚ(√-3)</h3>
+        
+        <label style="font-size: 12px; color: #888;">Select Prime (p > 3):</label>
+        <select id="prime-select"></select>
+
+        <button id="galois-btn">Trigger Galois Automorphism (σ)</button>
+
+        <div style="border-top: 1px solid #333; margin: 15px 0; padding-top: 15px;"></div>
+
+        <div class="data-row"><span>p (mod 12)</span> <span id="val-mod12" class="data-value"></span></div>
+        <div class="data-row"><span>DULA Phase χ_(-3)</span> <span id="val-dula" class="data-value highlight-cyan"></span></div>
+        <div class="data-row"><span>Target Root</span> <span id="val-root" class="data-value"></span></div>
+        <div class="data-row"><span>Generator Phase</span> <span id="val-phase" class="data-value"></span></div>
+        
+        <div style="margin-top: 15px; font-size: 11px; color: #666; line-height: 1.4;">
+            Observe: For p ≡ 1, 7 (mod 12), the continuous vector collapses onto the real axis (Im = 0), revealing the continuous geometry bridging the discrete DULA phases.
+        </div>
+    </div>
+
+    <canvas id="canvas"></canvas>
+
+    <script>
+        // --- MATHEMATICS KERNEL ---
+        class Complex {
+            constructor(re, im) { this.re = re; this.im = im; }
+            add(c) { return new Complex(this.re + c.re, this.im + c.im); }
+            sub(c) { return new Complex(this.re - c.re, this.im - c.im); }
+            mul(c) { return new Complex(this.re * c.re - this.im * c.im, this.re * c.im + this.im * c.re); }
+            mag() { return Math.sqrt(this.re * this.re + this.im * this.im); }
+            arg() { return Math.atan2(this.im, this.re); }
+            static polar(r, theta) { return new Complex(r * Math.cos(theta), r * Math.sin(theta)); }
+        }
+
+        function modPow(base, exp, mod) {
+            let res = 1;
+            base = base % mod;
+            while (exp > 0) {
+                if (exp % 2 === 1) res = (res * base) % mod;
+                exp = Math.floor(exp / 2);
+                base = (base * base) % mod;
+            }
+            return res;
+        }
+
+        function legendre(a, p) {
+            if (a % p === 0) return 0;
+            let ls = modPow(a, (p - 1) / 2, p);
+            return ls === p - 1 ? -1 : ls;
+        }
+
+        // --- GRAPHICS ENGINE ---
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        let width, height, centerX, centerY;
+
+        function resize() {
+            width = window.innerWidth;
+            height = window.innerHeight;
+            canvas.width = width;
+            canvas.height = height;
+            centerX = width / 2 + 150; // Offset for UI
+            centerY = height / 2;
+        }
+        window.addEventListener('resize', resize);
+        resize();
+
+        const primes = [7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79];
+        const select = document.getElementById('prime-select');
+        primes.forEach(p => {
+            let opt = document.createElement('option');
+            opt.value = p; opt.textContent = p;
+            select.appendChild(opt);
+        });
+
+        let currentPrime = 7;
+        let isAnimating = false;
+        let galoisProgress = 0; // 0 = ζ_6, 1 = ζ_6^5
+        let targetProgress = 0;
+
+        select.addEventListener('change', (e) => {
+            currentPrime = parseInt(e.target.value);
+            galoisProgress = 0; targetProgress = 0;
+            updateUI();
+        });
+
+        document.getElementById('galois-btn').addEventListener('click', () => {
+            targetProgress = targetProgress === 0 ? 1 : 0;
+        });
+
+        function updateUI() {
+            let mod12 = currentPrime % 12;
+            document.getElementById('val-mod12').innerText = mod12;
+            
+            let dula = (currentPrime % 6 === 1) ? "+1" : "-1";
+            document.getElementById('val-dula').innerText = dula;
+            document.getElementById('val-dula').className = "data-value " + (dula === "+1" ? "highlight-cyan" : "highlight-magenta");
+
+            document.getElementById('val-root').innerText = targetProgress > 0.5 ? "ζ_6^5 (Conjugate)" : "ζ_6 (Base)";
+        }
+
+        function draw() {
+            ctx.fillStyle = '#05050A';
+            ctx.fillRect(0, 0, width, height);
+
+            // Interpolate Galois Action
+            galoisProgress += (targetProgress - galoisProgress) * 0.05;
+            if (Math.abs(targetProgress - galoisProgress) < 0.001) galoisProgress = targetProgress;
+
+            // Current target angle: Transitions smoothly from 60 deg (π/3) to 300 deg (5π/3)
+            let targetAngle = (Math.PI / 3) * (1 - galoisProgress) + (5 * Math.PI / 3) * galoisProgress;
+            let targetZ = Complex.polar(1, targetAngle);
+
+            let R_unit = Math.min(width, height) * 0.25; // Radius of unit circle
+
+            // Draw Cartesian Grid
+            ctx.strokeStyle = '#1a1a24'; ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(0, centerY); ctx.lineTo(width, centerY);
+            ctx.moveTo(centerX, 0); ctx.lineTo(centerX, height);
+            ctx.stroke();
+
+            // Draw Unit Circle
+            ctx.strokeStyle = '#334'; ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, R_unit, 0, Math.PI * 2);
+            ctx.stroke();
+
+            // Calculate G_p and gather roots
+            let roots = [];
+            let G = new Complex(1, 0);
+            for (let r = 1; r < currentPrime; r++) {
+                if (legendre(r, currentPrime) === 1) {
+                    let rootAngle = 2 * Math.PI * r / currentPrime;
+                    let root = Complex.polar(1, rootAngle);
+                    roots.push(root);
+                    G = G.mul(targetZ.sub(root));
+                }
+            }
+
+            // Draw Roots and Connection Vectors
+            roots.forEach(root => {
+                let rx = centerX + root.re * R_unit;
+                let ry = centerY - root.im * R_unit; // Canvas Y is inverted
+                let tx = centerX + targetZ.re * R_unit;
+                let ty = centerY - targetZ.im * R_unit;
+
+                // Difference vector lines
+                ctx.strokeStyle = `rgba(255, 255, 255, 0.15)`;
+                ctx.beginPath();
+                ctx.moveTo(rx, ry);
+                ctx.lineTo(tx, ty);
+                ctx.stroke();
+
+                // Quadratic Residue points
+                ctx.fillStyle = '#FFD700';
+                ctx.beginPath();
+                ctx.arc(rx, ry, 4, 0, Math.PI * 2);
+                ctx.fill();
+            });
+
+            // Draw Target Root (ζ_6 or its transition)
+            let tx = centerX + targetZ.re * R_unit;
+            let ty = centerY - targetZ.im * R_unit;
+            ctx.fillStyle = galoisProgress > 0.5 ? '#FF2266' : '#00FFFF';
+            ctx.shadowColor = ctx.fillStyle;
+            ctx.shadowBlur = 15;
+            ctx.beginPath();
+            ctx.arc(tx, ty, 8, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.shadowBlur = 0;
+
+            // Draw Final G_p Vector (The Continuous Generator)
+            // Auto-scale it so it fits on screen dynamically
+            let displayScale = (Math.min(width, height) * 0.40) / G.mag();
+            let gx = centerX + G.re * displayScale;
+            let gy = centerY - G.im * displayScale;
+
+            ctx.strokeStyle = galoisProgress > 0.5 ? '#FF2266' : '#00FFFF';
+            ctx.lineWidth = 4;
+            ctx.beginPath();
+            ctx.moveTo(centerX, centerY);
+            ctx.lineTo(gx, gy);
+            ctx.stroke();
+
+            // Draw G_p arrowhead
+            let arrowAngle = Math.atan2(centerY - gy, centerX - gx);
+            ctx.fillStyle = ctx.strokeStyle;
+            ctx.beginPath();
+            ctx.moveTo(gx, gy);
+            ctx.lineTo(gx + 15 * Math.cos(arrowAngle - Math.PI/6), gy + 15 * Math.sin(arrowAngle - Math.PI/6));
+            ctx.lineTo(gx + 15 * Math.cos(arrowAngle + Math.PI/6), gy + 15 * Math.sin(arrowAngle + Math.PI/6));
+            ctx.fill();
+
+            // Update Phase Data
+            let phaseDeg = (G.arg() * 180 / Math.PI).toFixed(2);
+            if (phaseDeg < 0) phaseDeg = (parseFloat(phaseDeg) + 360).toFixed(2);
+            document.getElementById('val-phase').innerText = phaseDeg + "°";
+
+            requestAnimationFrame(draw);
+        }
+
+        updateUI();
+        draw();
+    </script>
+</body>
+</html>
