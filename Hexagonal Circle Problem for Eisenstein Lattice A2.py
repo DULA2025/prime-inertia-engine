@@ -16,7 +16,7 @@ def Z(t):
     z_val = mpmath.exp(1j * theta) * L_val
     return float(mpmath.re(z_val))
 
-def find_zeros(max_t=120, step=0.2):
+def find_zeros(max_t=180, step=0.12):
     print("Finding zeros of L(s, χ_{-3})...")
     t_vals = np.arange(2, max_t, step)
     z_vals = [Z(t) for t in t_vals]
@@ -47,49 +47,47 @@ def compute_error(N_max):
     return R - Area
 
 # ====================== MAIN ======================
-zeros = find_zeros(max_t=120)
+zeros = find_zeros(max_t=180)
 
-N_max = 500_000
+N_max = 300_000
 Error = compute_error(N_max)
-N_vals = np.arange(N_max + 1)          # Now includes 0 to N_max (length 500001)
+N_vals = np.arange(N_max + 1)
 
-# Approximate Explicit Formula
-print("Building explicit formula approximation...")
+# Improved Explicit Formula with better scaling
+print("Building improved explicit formula...")
 Explicit = np.zeros(N_max + 1)
 
 for gamma in zeros:
     rho = 0.5 + 1j * gamma
-    # Use N_vals (includes 0)
-    term = (N_vals ** (rho / 2)) / (rho * np.abs(rho))
+    # Better coefficient: N^{rho/2} / sqrt(|rho|)
+    term = (N_vals ** (rho / 2)) / np.sqrt(np.abs(rho))
     Explicit += 2 * np.real(term)
 
-# ====================== IMPROVED PLOT ======================
+# ====================== FINAL PLOT ======================
 plt.style.use('seaborn-v0_8-whitegrid')
 fig, ax = plt.subplots(figsize=(14, 7), dpi=150)
 
-# Plot only up to 300,000 for clarity
-ax.plot(N_vals[:300001], Error[:300001], 
-        label='Numerical Error $E(N)$ (from DULA character)', 
+ax.plot(N_vals[:250001], Error[:250001], 
+        label='Numerical Error $E(N)$ (from DULA character $\\chi_{-3}$)', 
         color='#008B8B', linewidth=0.7, alpha=0.85)
 
-ax.plot(N_vals[:300001], Explicit[:300001], 
-        label='Explicit Formula (sum over first 58 zeros of $L(s, \\chi_{-3})$)', 
-        color='#DC143C', linewidth=1.4, alpha=0.9)
+ax.plot(N_vals[:250001], Explicit[:250001], 
+        label='Explicit Formula (improved coefficients)', 
+        color='#DC143C', linewidth=1.8, alpha=0.95)
 
-ax.axhline(0, color='black', linestyle='--', linewidth=1.2, alpha=0.7)
+ax.axhline(0, color='black', linestyle='--', linewidth=1.2)
 
-# Professional formatting
-ax.set_title(r'Hexagonal Circle Problem for Eisenstein Lattice $A_2$' + '\n' +
+ax.set_title(r'Hexagonal Circle Problem — Eisenstein Lattice $A_2$' + '\n' +
              r'Numerical Error vs Explicit Formula from Zeros of $L(s, \chi_{-3})$', 
              fontsize=15, fontweight='bold', pad=20)
 
 ax.set_xlabel(r'Squared Radius $N$', fontsize=13)
 ax.set_ylabel(r'Error Term $E(N)$', fontsize=13)
-ax.legend(fontsize=11, loc='upper right', framealpha=0.95)
-ax.set_xlim(0, 300000)
+ax.legend(fontsize=11, loc='upper right')
+ax.set_xlim(0, 250000)
 ax.grid(True, alpha=0.3, linestyle='--')
 
 plt.tight_layout()
 plt.show()
 
-print("\nPlot generated successfully!")
+print("\nDone!")
