@@ -24,14 +24,17 @@
 
 abbrev Mat := List (List Int)
 
+/-- `List.get!` was removed from this Lean core; reintroduce it locally. -/
+def List.get! {α : Type _} [Inhabited α] (l : List α) (n : Nat) : α := l.getD n default
+
 def dot (a b : List Int) : Int := (List.zipWith (fun x y => x*y) a b).foldl (fun s x => s+x) 0
-def col (A : Mat) (j : Nat) : List Int := A.map (fun r => r[j]!)
-def tr (A : Mat) : Mat := (List.range ((A[0]!).length)).map (col A)
+def col (A : Mat) (j : Nat) : List Int := A.map (fun r => r.get! j)
+def tr (A : Mat) : Mat := (List.range ((A.get! 0).length)).map (col A)
 def mul (A B : Mat) : Mat := let Bt := tr B; A.map (fun r => Bt.map (fun c => dot r c))
 def idm (n : Nat) : Mat := (List.range n).map (fun i => (List.range n).map (fun j => if i = j then (1:Int) else 0))
 def smul (c : Int) (A : Mat) : Mat := A.map (fun r => r.map (fun x => c*x))
 def negm (A : Mat) : Mat := smul (-1) A
-def evenDiag (A : Mat) : Bool := (List.range A.length).all (fun i => ((A[i]!)[i]!) % 2 == 0)
+def evenDiag (A : Mat) : Bool := (List.range A.length).all (fun i => ((A.get! i).get! i) % 2 == 0)
 def GE8 : Mat := [
   [4, 2, 2, 2, 2, 2, 2, 1],
   [2, 2, 1, 1, 1, 1, 1, 1],
@@ -540,10 +543,10 @@ theorem nonsplit_witness : mul (mul S1 S2) (mul S1 S2) = negm (idm 8) := by nati
 /-! ## Section C: Clifford provenance of the spin copy -/
 theorem clifford_relations :
     ((List.range 8).all (fun i => (List.range 8).all (fun j =>
-      let s := mul (Gammas[i]!) (Gammas[j]!)
-      let t := mul (Gammas[j]!) (Gammas[i]!)
+      let s := mul (Gammas.get! i) (Gammas.get! j)
+      let t := mul (Gammas.get! j) (Gammas.get! i)
       (List.range 16).all (fun a => (List.range 16).all (fun b =>
-        ((s[a]!)[b]! + (t[a]!)[b]!) ==
+        ((s.get! a).get! b + (t.get! a).get! b) ==
           (if i = j ∧ a = b then (2:Int) else 0)))))) = true := by native_decide
 theorem clifford_nonsplit_lift :
     mul (mul Rh1 Rh3) (mul Rh1 Rh3) = smul (-64) (idm 16) := by native_decide
@@ -564,7 +567,7 @@ theorem leech_even_unimodular :
 /-! ## Section F: binary Turyn glue — 2^12 words, cyclic shift invariance -/
 def glueWords : List Nat :=
   (List.range 4096).map (fun m =>
-    (List.range 12).foldl (fun a k => if m.testBit k then a ^^^ (glueGens[k]!) else a) 0)
+    (List.range 12).foldl (fun a k => if m.testBit k then a ^^^ (glueGens.get! k) else a) 0)
 def shift3 (n : Nat) : Nat := (n >>> 16) ||| ((n &&& 0xFFFF) <<< 8)
 theorem glue_distinct :
     ((glueWords.foldl (fun (p : List Nat × Bool) w =>
@@ -576,10 +579,10 @@ theorem glue_shift_invariant :
 def actRow (row v : Nat) : Nat :=
   ((List.range 8).foldl (fun a j => if row.testBit j && v.testBit j then a+1 else a) 0) % 2
 def act (g : List Nat) (v : Nat) : Nat :=
-  (List.range 8).foldl (fun acc i => if actRow (g[i]!) v == 1 then acc ||| (1 <<< i) else acc) 0
+  (List.range 8).foldl (fun acc i => if actRow (g.get! i) v == 1 then acc ||| (1 <<< i) else acc) 0
 def rowmasks (A : Mat) : List Nat :=
   (List.range 8).map (fun i => (List.range 8).foldl
-    (fun m j => if (((A[i]!)[j]! : Int)) % 2 == 1 then m ||| (1 <<< j) else m) 0)
+    (fun m j => if ((A.get! i).get! j) % 2 == 1 then m ||| (1 <<< j) else m) 0)
 def grow (gens : List (List Nat)) : List Nat → Nat → List Nat
   | acc, 0 => acc
   | acc, fuel+1 =>
