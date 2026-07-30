@@ -1,4 +1,133 @@
 # 🌌 The Prime Inertia Engine (PIE)
+
+> **Classical Fluid Analogue · 26-Dimensional Projection · Biharmonic Regularization**
+
+[![WebGL](https://img.shields.io/badge/WebGL-Simulation-00f7ff?style=flat-square&logo=webgl)](https://github.com/DULA2025/prime-inertia-engine/blob/main/Prime%20Inertia%20Engine%20(3D).html)
+[![CodePen](https://img.shields.io/badge/CodePen-Live%20Demo-47CF73?style=flat-square&logo=codepen)](https://codepen.io/DULA2025/pen/LERMgxv)
+[![Manifold](https://img.shields.io/badge/Manifold-%E2%84%9D%C2%B2%E2%81%B6-ff9100?style=flat-square)](#)
+[![License](https://img.shields.io/badge/License-Research-lightgrey?style=flat-square)](#)
+
+---
+
+## 📐 1. System Definition
+
+The **Prime Inertia Engine (PIE)** visualization is a 3D projection of a classical, non-relativistic vector field. It models a **linear biharmonic fluid** subjected to discrete point forcing at prime-labeled nodes.
+
+> **Note:** This system is a rigorously defined *classical fluid analogue*.  
+> It does **not** represent quantum gravity, general relativity, or spacetime curvature.
+
+---
+
+## ⚙️ 2. The Action Functional
+
+The dynamics are governed by a well-defined action on a Sobolev space  
+\( H^2(\mathbb{R}^{26},\mathbb{R}^{26}) \), using Radon measures (Dirac deltas) to anchor discrete prime nodes inside a continuous 26-dimensional bulk:
+
+$$
+S[\mathbf{u}] = \int_{\mathbb{R}^{26}} \Biggl[
+  \frac12 |\nabla\mathbf{u}|^2
+  + M_{\mathrm{vac}} |\Delta\mathbf{u}|^2
+  + \Biggl( \sum_{p\,\mathrm{prime}} \chi_6(p)\,\log p\;
+    \boldsymbol{\delta}^{26}(x-\mathbf{x}_p) \Biggr)\cdot\mathbf{u}(x)
+\Biggr]\,d^{26}x
+$$
+
+### Key Parameters
+
+| Symbol | Meaning |
+|--------|---------|
+| \(\mathbf{x}_p\) | Fixed embedding of primes into \(\mathbb{R}^{26}\) (construction \(\mathbb{R}^{1,1}\times\Lambda_{24}\otimes\mathbb{R}\)) |
+| \(\chi_6(p)\) | Mod-6 Dirichlet character (binary phase switch) |
+| | 🟢 \(+1\) when \(p\equiv 1\pmod6\) |
+| | 🟠 \(-1\) when \(p\equiv 5\pmod6\) |
+| Sieve | Only primes \(p\ge 5\) (2 and 3 excluded) |
+
+### Arithmetic Viscosity (corrected)
+
+The hyperviscous coefficient is fixed by modular arithmetic at the fixed point \(\tau=i\):
+
+$$
+M_{\mathrm{vac}} \;=\; \ln 2\cdot\ln 3\cdot e^{-2\pi}
+\;\approx\; 0.00142206
+$$
+
+This value replaces earlier inconsistent numerical claims and is the default viscosity used in all current WebGL solvers.
+
+---
+
+## 🧮 3. Euler–Lagrange Mechanics
+
+Stationarity of the action (\(\delta S=0\)) yields the fourth-order linear PDE
+
+$$
+2\,M_{\mathrm{vac}}\,\Delta^{2}\mathbf{u}
+-\Delta\mathbf{u}
+=-\sum_{p\,\mathrm{prime}}\chi_6(p)\,\log p\;
+\boldsymbol{\delta}^{26}(x-\mathbf{x}_p).
+$$
+
+- \(-\Delta\mathbf{u}\) — ordinary viscous drag  
+- \(2M_{\mathrm{vac}}\Delta^{2}\mathbf{u}\) — biharmonic (hyperviscous) regularizer that damps the highest modes and keeps the Dirac nodes from producing finite-time blow-up
+
+---
+
+## 💻 4. Computational Realization
+
+True 26-dimensional space cannot be rendered directly. The engine therefore **projects** the vector field into ordinary 3-D Euclidean space, treating the remaining dimensions as internal topological offsets.
+
+### Core WebGL Engine
+
+| Component | Implementation |
+|-----------|----------------|
+| Viscous drag \(-\Delta\mathbf{u}\) | Laplacian damping on particle / grid velocities |
+| Hyperviscosity \(2M_{\mathrm{vac}}\Delta^{2}\mathbf{u}\) | Fourth-order term controlled by the corrected \(M_{\mathrm{vac}}\) |
+| Prime nodes | Colored by \(\chi_6\): **cyan** (\(+1\)), **orange** (\(-1\)) |
+| Live demo | [GitHub HTML](https://github.com/DULA2025/prime-inertia-engine/blob/main/Prime%20Inertia%20Engine%20(3D).html) · [CodePen](https://codepen.io/DULA2025/pen/LERMgxv) |
+
+### Hybrid & Lattice Demonstrations
+
+Additional interactive solvers explore the same biharmonic regularization in classical CFD settings (von Kármán wakes, cube / sphere obstacles, D2Q9 / D3Q19 lattices):
+
+- **Hybrid GPGPU 3-D Kármán** — CPU projection Navier–Stokes + WebGL2 particle advection, interactive cube / sphere, professional CFD colormap  
+- **Improved PIE Kármán** — 64×32×32 grid, 1 M GPU particles, corrected \(M_{\mathrm{vac}}\), draggable obstacle  
+- **Lattice-Boltzmann** — full D2Q9 (2-D) and D3Q19 (3-D) BGK solvers with bounce-back obstacles  
+
+These demos illustrate how a small, modularly-derived hyperviscosity stabilizes discrete forcing and produces coherent vortical structures.
+
+---
+
+## 🔬 5. Research Status
+
+This repository contains:
+
+- a **classical fluid analogue** whose mathematics is fully specified,
+- Lean 4 formalizations of the DULA grading and related arithmetic statements,
+- interactive WebGL / GPGPU visualizations of the projected biharmonic dynamics.
+
+Whether the geometric constraints observed in the model correlate with analytic zero-free regions of \(L\)-functions (via the Rankin–Selberg program), or whether the spectral correspondence axioms formalized in the Lean sources imply the Riemann Hypothesis, remains an **open, unproven research inquiry**.
+
+---
+
+## 📁 Repository Layout (selected)
+
+```
+Prime Inertia Engine (3D).html   # primary WebGL particle engine
+*.lean                           # DULA / spectral formalizations
+README.md                        # this file
+```
+
+---
+
+## 📜 License & Citation
+
+Intended for research and educational use.  
+If you build upon the classical fluid analogue or the corrected \(M_{\mathrm{vac}}\) formula, please cite this repository.
+
+```
+DULA2025, Prime Inertia Engine (PIE),
+https://github.com/DULA2025/prime-inertia-engine
+```
+# 🌌 The Prime Inertia Engine (PIE)
 > **Classical Fluid Analogue | 26-Dimensional Projection | Biharmonic Regularization**
 
 [![WebGL](https://img.shields.io/badge/WebGL-Simulation-00f7ff?style=flat-square&logo=webgl)](https://github.com/DULA2025/prime-inertia-engine/blob/main/Prime%20Inertia%20Engine%20(3D).html)
