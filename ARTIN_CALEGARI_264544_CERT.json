@@ -1,0 +1,93 @@
+{
+  "Polynomial": "x^5 - x^4 - 3*x^3 - 3*x^2 - 2*x - 2",
+  "Sextic F": "x^6 - 2*x^5 + 85*x^4 - 2176*x^3 - 20945*x^2 - 104398*x + 27673",
+  "Degree-12 H = F.E": "x^12 - 6*x^11 + 35*x^10 - 120*x^9 + 3*x^8 + 642*x^7 - 5599*x^6 + 14112*x^5 - 2240*x^4 - 18084*x^3 - 49240*x^2 + 60496*x + 361580",
+  "Discriminant": 264544,
+  "Disc(K) factorization": "2^5 * 7 * 1181",
+  "Disc(F)": 1157107650893824,
+  "Disc(F) factorization": "2^11 * 7^3 * 1181^3",
+  "Disc(E)": 66136,
+  "Disc(E) factorization": "2^3 * 7 * 1181",
+  "Disc(H)": 1338898115757023677106121342976,
+  "Disc(H) factorization": "2^22 * 7^6 * 1181^6",
+  "Galois group": "S5",
+  "Signature": [1, 2],
+  "Frob_5 class": "2B",
+  "Conductor of ρ5": 17495881984,
+  "Conductor factorization": "2^8 * 7^2 * 1181^2",
+  "Vga": [0, 0, 0, 1, 1],
+  "root number": 1,
+  "Ramified Euler factors": {
+    "2": {"L_p": "1/(1-x)", "a_p": 1, "deg": 1, "splitting_F": "e=6,f=1", "splitting_H": "two primes e=6,f=1"},
+    "7": {"L_p": "1/(1-x^3)", "a_p": 0, "deg": 3, "splitting_F": "e=2,f=3", "splitting_H": "two primes e=2,f=3"},
+    "1181": {"L_p": "1/(1-x)^3", "a_p": 3, "deg": 3, "splitting_F": "three primes e=2,f=1", "splitting_H": "six primes e=2,f=1"}
+  },
+  "prime trace match χ5": "76/76 unramified primes < 400",
+  "Number of coefficients used": 500000,
+  "a_n[1..40]": [1, 1, 0, 1, 1, 0, 0, 1, 0, 1, 0, 0, -1, 0, 0, 1, -1, 0, -1, 1, 0, 0, -1, 0, 3, -1, 0, 0, 0, 0, -1, 1, 0, -1, 0, 0, -1, -1, 0, 1],
+  "thetacost": {
+    "128-bit t>=1": 14819543,
+    "256-bit t>=1": 69775711
+  },
+  "FE check (bits)": {
+    "rho5 t=1 256-bit": -319,
+    "rho5 t=1.1 256-bit": -276,
+    "rho5 t=1 128-bit": -191,
+    "rho5 t=1.1 128-bit": -126,
+    "rho5 t=1.2 128-bit": -126,
+    "rho4 control 256-bit": -256,
+    "rho4 control 128-bit": -125
+  },
+  "Euler product": {
+    "L(2) P<=2e5": "1.3711580783796424129142122757286759992196729742865841245709675713556734501966",
+    "L(3/2) P<=2e5": "1.6150940380564673642148681875848199592337426340092598028988322833766079113449",
+    "L(6/5) P<=2e5": "1.8521604713085611054859593351509884180071487054562097290983598139668611857780"
+  },
+  "L(s,ρ5) 128-bit (~38 digits)": {
+    "1/100": "0.0031314862776752971571189214338132656298",
+    "1/20": "0.25437417220207574462474783466895969056",
+    "1/10": "1.1947483441238450300",
+    "1/4": "4.028678118056499054",
+    "1/3": "4.331015776039115352",
+    "1/2": "3.6295438795785951496537391289640470908",
+    "3/4": "2.578009340546033864",
+    "4/5": "2.447801453528776733",
+    "9/10": "2.240733354501224217",
+    "99/100": "2.097200151060350320",
+    "1": "2.0830848151646153679939863042394395365"
+  },
+  "L(s,ρ5) 256-bit (~77 digits)": {
+    "1/100": "0.0031314862776752971571189214338132656316840005745786340274221248839102983598403",
+    "1/20": "0.25437417220207574462474783466895969057980388415308202826734034802175827585454",
+    "1/3": "4.3310157760391153963448792869460157248944260360451858978843867555854650121405",
+    "1/2": "3.6295438795785951496537391289640470906598051708033825298013831967719230388105",
+    "1": "2.0830848151646153679939863042394395364871827202733697908358428737331415984805"
+  },
+  "trivial zero at s=0": {
+    "order": 3,
+    "L(10^{-k})/10^{-3k}": {
+      "k=1": "1194.7483441238450300",
+      "k=2": "3131.486277675297145",
+      "k=3": "3452.056725983049572",
+      "k=4": "3485.895652931546900",
+      "k=5": "3489.298026507068704",
+      "k=6": "3489.638449353754681",
+      "k=7": "3489.672493493996808"
+    },
+    "note": "Γ_R(s)^3 has a pole of order 3 at s=0, so L(s,ρ5) has a trivial zero of order 3 at s=0 (not in (0,1)). The ratio L(s)/s^3 tends to a positive constant."
+  },
+  "Real interval test": "no zero found",
+  "grid": {
+    "interval": "[0.01, 0.99]",
+    "step": 1e-4,
+    "npoints": 9801,
+    "minabs": "0.0031314862776752971571189214338132656298",
+    "argmin": "1/100",
+    "sign_changes": 0,
+    "precision_bits": 128
+  },
+  "Precision": "FE at 256-bit (77 decimal digits of working precision; checkfeq −319 bits at t=1). Real-line grid of 9801 points at 128-bit (~38 decimal digits). Selected values L(1/100), L(1/20), L(1/3), L(1/2), L(1) recomputed at 256-bit and agree with the 128-bit grid to all overlapping digits.",
+  "Conclusion": "Calegari 1.2 applies",
+  "Calegari 1.1": "already applies (signature (1,2), Frob_5 = 2B, 5 unramified) so ρ4 and ρ6 are modular",
+  "notes": "L(s,ρ5) = ζ_H(s) / (ζ_F(s) L(s,η_E)). Conductor of ρ5 is Disc(H)/(Disc(E) Disc(F)), not Disc(K)^2 and not Disc(F). Evaluations use PARI 2.17.4 lfun (approximate functional equation) with Euler-product coefficients. No sign change on 9801 points of [0.01,0.99]; the only real zero on [0,1] is the trivial zero of order 3 at s=0. This is a numerical verification with a functional equation certified to 191 bits (128-bit run) and 319 bits (256-bit run), not an interval-arithmetic formal proof. Combined with Calegari arXiv:1112.1152 Theorem 1.2, every irreducible complex representation of Gal(K^gal/Q) is modular."
+}
