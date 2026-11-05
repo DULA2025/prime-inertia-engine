@@ -1,0 +1,1965 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CymaScope 528Hz & 741Hz AUM Water Cymatics & Neural Resonance</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Three.js r128 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            color-scheme: dark;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #020106;
+            color: #f3f4f6;
+            overflow: hidden;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+        .font-cinzel {
+            font-family: 'Cinzel', serif;
+        }
+        .font-mono-tech {
+            font-family: 'JetBrains Mono', monospace;
+        }
+        .glass-hud {
+            background: rgba(8, 5, 18, 0.76);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(168, 85, 247, 0.22);
+            box-shadow: 0 12px 40px -10px rgba(0, 0, 0, 0.85), 0 0 25px -5px rgba(139, 92, 246, 0.15);
+        }
+        .glass-pill {
+            background: rgba(15, 10, 32, 0.82);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(139, 92, 246, 0.28);
+        }
+        /* Custom Range Sliders */
+        input[type=range] {
+            -webkit-appearance: none;
+            appearance: none;
+            background: transparent;
+            cursor: pointer;
+        }
+        input[type=range]::-webkit-slider-runnable-track {
+            height: 5px;
+            border-radius: 999px;
+            background: rgba(88, 28, 135, 0.55);
+            border: 1px solid rgba(168, 85, 247, 0.25);
+        }
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            height: 14px;
+            width: 14px;
+            border-radius: 50%;
+            background: #e9d5ff;
+            border: 2px solid #9333ea;
+            box-shadow: 0 0 10px rgba(168, 85, 247, 0.9);
+            margin-top: -5px;
+            transition: transform 0.15s ease, background-color 0.15s ease;
+        }
+        input[type=range]::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+            background: #ffffff;
+        }
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        canvas {
+            display: block;
+            outline: none;
+        }
+    </style>
+</head>
+<body class="w-screen h-screen relative flex flex-col justify-between bg-[#020106] overflow-hidden">
+
+    <!-- Top Scientific Navigation & Telemetry Header -->
+    <header class="w-full z-30 px-4 py-2.5 flex flex-wrap items-center justify-between gap-3 glass-hud border-b border-purple-500/20">
+        <!-- Brand & Instrument Identity -->
+        <div class="flex items-center space-x-3">
+            <div id="brandBadgeIcon" class="relative w-9 h-9 rounded-full bg-gradient-to-br from-purple-500 via-indigo-600 to-violet-950 flex items-center justify-center shadow-lg shadow-purple-600/30 border border-purple-300/30 transition-all duration-500">
+                <!-- 24-LED Ring Mini Icon -->
+                <svg class="w-5 h-5 text-white" viewBox="0 0 24 24" fill="none">
+                    <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.2" stroke-opacity="0.4"/>
+                    <circle cx="12" cy="12" r="5" stroke="currentColor" stroke-width="2" stroke-dasharray="1 2.2" stroke-linecap="round"/>
+                    <circle cx="12" cy="12" r="1.5" fill="currentColor"/>
+                </svg>
+                <span id="statusDot" class="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-amber-400 ring-2 ring-black"></span>
+            </div>
+            <div>
+                <div class="flex items-center space-x-2">
+                    <h1 class="font-cinzel text-sm sm:text-base font-bold tracking-wider text-white">CYMASCOPE LAB</h1>
+                    <span id="headerFreqTag" class="text-[10px] font-mono-tech uppercase px-2 py-0.5 rounded bg-purple-950/90 text-purple-200 border border-purple-500/40 transition-colors duration-300">132Hz Root • 528Hz • 741Hz</span>
+                </div>
+                <p id="headerSubTitle" class="text-[11px] text-purple-300/80 hidden sm:block">DNA Repair &amp; Awakening Dual • 24-LED Water Interferometry &amp; Cortical Entrainment</p>
+            </div>
+        </div>
+
+        <!-- Live Breath Phase & Acoustic Spectrum Pill -->
+        <div class="flex items-center space-x-3 glass-pill px-3.5 py-1.5 rounded-full">
+            <div class="flex items-center space-x-2">
+                <span class="text-[10px] font-mono-tech uppercase tracking-wider text-purple-400">Phase:</span>
+                <span id="breathPhaseBadge" class="text-xs font-mono-tech font-semibold text-emerald-300 min-w-[135px] text-center px-2 py-0.5 rounded-full bg-emerald-950/60 border border-emerald-500/30">
+                    STANDBY (24-LED RING)
+                </span>
+            </div>
+            <div class="h-4 w-[1px] bg-purple-800/60 hidden md:block"></div>
+            <!-- Mini Real-Time Spectrum & Breath Progress Canvas -->
+            <canvas id="spectrumCanvas" width="120" height="24" class="hidden md:block rounded bg-black/50 border border-purple-900/50"></canvas>
+        </div>
+
+        <!-- Viewport Layout Switcher -->
+        <div class="flex items-center bg-purple-950/50 p-1 rounded-xl border border-purple-800/40 space-x-1">
+            <button onclick="setViewportLayout('split')" id="layoutBtn-split" class="px-3 py-1 text-xs font-medium rounded-lg transition-all bg-purple-600 text-white shadow shadow-purple-600/40">
+                Split View (Dish + Brain)
+            </button>
+            <button onclick="setViewportLayout('dish')" id="layoutBtn-dish" class="px-3 py-1 text-xs font-medium rounded-lg transition-all text-purple-300 hover:text-white">
+                CymaScope Dish
+            </button>
+            <button onclick="setViewportLayout('brain')" id="layoutBtn-brain" class="px-3 py-1 text-xs font-medium rounded-lg transition-all text-purple-300 hover:text-white">
+                3D Neural Brain
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Split / Dual Simulation Area -->
+    <main id="mainStage" class="relative flex-grow w-full h-full flex flex-col lg:flex-row overflow-hidden bg-black">
+        
+        <!-- VIEWPORT 1: Top / Left — Physical CymaScope 24-LED Water Dish -->
+        <section id="dishPane" class="relative w-full h-[54%] lg:h-full lg:w-1/2 flex items-center justify-center bg-black overflow-hidden border-b lg:border-b-0 lg:border-r border-purple-950/60 transition-all duration-300">
+            <div id="dishCanvasContainer" class="w-full h-full flex items-center justify-center"></div>
+
+            <!-- Subtle Scientific Overlay Labels on CymaScope Viewport -->
+            <div class="absolute top-3 left-4 pointer-events-none flex flex-col space-y-1">
+                <div class="flex items-center space-x-2">
+                    <span class="w-2 h-2 rounded-full bg-purple-400 animate-pulse"></span>
+                    <span class="text-[11px] font-mono-tech uppercase tracking-widest text-purple-200/90">CHAMBER A: WATER CYMATICS (24-LED RING)</span>
+                </div>
+                <span id="cymaticsModeReadout" class="text-[10px] font-mono-tech text-purple-400/80">
+                    Mode: J₀(kr) + J₆/J₁₂ Faraday Standing Wave • f₀ = 132.0 Hz (528/4)
+                </span>
+            </div>
+
+            <!-- Quick Trigger Breath Button on Dish Corner -->
+            <div class="absolute top-3 right-4 z-10 flex items-center space-x-2">
+                <button onclick="triggerFreshBreath()" title="Restart Mantra Breath Cycle" class="px-2.5 py-1 rounded-lg glass-pill text-[11px] font-mono-tech text-purple-200 hover:text-white hover:border-purple-400 transition flex items-center space-x-1.5">
+                    <svg class="w-3.5 h-3.5 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                    </svg>
+                    <span>Re-Cue Breath</span>
+                </button>
+            </div>
+        </section>
+
+        <!-- VIEWPORT 2: Bottom / Right — 3D Brain Neural Resonance Simulation -->
+        <section id="brainPane" class="relative w-full h-[46%] lg:h-full lg:w-1/2 flex items-center justify-center bg-[#030108] overflow-hidden transition-all duration-300">
+            <div id="brainCanvasContainer" class="w-full h-full relative cursor-grab active:cursor-grabbing"></div>
+
+            <!-- Subtle Telemetry Overlay on 3D Brain Viewport -->
+            <div class="absolute top-3 left-4 pointer-events-none flex flex-col space-y-1">
+                <div class="flex items-center space-x-2">
+                    <span id="brainDotIndicator" class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                    <span id="brainHeaderLabel" class="text-[11px] font-mono-tech uppercase tracking-widest text-emerald-200/90">CHAMBER B: CORTICAL BIO-RESONANCE</span>
+                </div>
+                <span id="brainTelemetryReadout" class="text-[10px] font-mono-tech text-purple-300/80">
+                    Thalamocortical Entrainment • 528Hz &amp; 741Hz Synaptic Coherence
+                </span>
+            </div>
+
+            <!-- Bottom-Right Research Card Badge -->
+            <div class="absolute bottom-4 right-4 pointer-events-none hidden sm:flex flex-col items-end max-w-xs">
+                <div id="freqResearchCard" class="glass-pill px-3.5 py-2 rounded-xl border border-purple-500/30 text-right shadow-xl transition-all duration-300">
+                    <div class="flex items-center justify-end space-x-1.5">
+                        <span id="cardColorDot" class="w-2 h-2 rounded-full bg-purple-400"></span>
+                        <p id="cardTitle" class="text-[11px] font-semibold text-white">528 Hz + 741 Hz Original AUM Dual</p>
+                    </div>
+                    <p id="cardDesc" class="text-[10px] text-purple-200/80 mt-0.5 leading-snug">
+                        132 Hz (528/4) baritone AUM root layered with 528 Hz DNA transformation &amp; 741 Hz cellular cleansing harmonics.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Center Floating Start Prompt (Visible before audio is started) -->
+        <div id="startOverlay" class="absolute inset-0 z-20 bg-black/55 backdrop-blur-sm flex items-center justify-center p-4 transition-opacity duration-500">
+            <div class="glass-hud max-w-md w-full p-6 rounded-3xl border border-purple-400/30 text-center flex flex-col items-center space-y-4 shadow-2xl">
+                <div class="w-16 h-16 rounded-full bg-purple-900/50 border border-purple-400/40 flex items-center justify-center shadow-inner">
+                    <span class="font-cinzel text-3xl text-purple-200">ॐ</span>
+                </div>
+                <div>
+                    <h2 class="font-cinzel text-lg font-bold text-white tracking-wide">Initialize CymaScope &amp; Formant Choir</h2>
+                    <p class="text-xs text-purple-200/80 mt-1 leading-relaxed">
+                        Experiences authentic multi-voice 132 Hz vocal formant synthesis (<span class="text-purple-300 font-semibold">"Oooo... Mmmm..."</span>) with subtle 528 Hz &amp; 741 Hz harmonic overtones and real-time 24-LED water cymatics.
+                    </p>
+                </div>
+                <button onclick="startExperience()" class="w-full py-3.5 px-6 rounded-2xl bg-gradient-to-r from-purple-600 via-violet-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-semibold text-sm tracking-wider uppercase shadow-lg shadow-purple-600/50 border border-purple-300/40 transition-all transform hover:-translate-y-0.5">
+                    Start Audio &amp; Cymatics Simulation
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <!-- Researched Healing Frequencies Selection Matrix Bar -->
+    <section class="w-full z-30 px-4 py-2 bg-[#060310]/90 backdrop-blur-md border-t border-purple-500/20">
+        <div class="max-w-7xl mx-auto flex items-center justify-between gap-3">
+            <div class="flex items-center space-x-2 shrink-0">
+                <span class="text-[10px] font-mono-tech uppercase tracking-widest text-purple-300/90 hidden sm:inline">Healing Spectrum:</span>
+                <button onclick="toggleAutoFreqJourney()" id="autoJourneyBtn" title="Automatically step through all 11 healing frequencies on each breath cycle" class="px-2.5 py-1 rounded-lg text-[10px] font-mono-tech uppercase tracking-wider bg-purple-950/80 text-purple-300 border border-purple-700/50 hover:border-purple-400 hover:text-white transition flex items-center space-x-1">
+                    <span id="autoJourneyDot" class="w-1.5 h-1.5 rounded-full bg-purple-400"></span>
+                    <span>Journey: Off</span>
+                </button>
+            </div>
+
+            <!-- Horizontal Scrollable Pill Bar of 11 Researched Frequencies -->
+            <div id="freqSelectorContainer" class="flex items-center space-x-1.5 overflow-x-auto no-scrollbar py-0.5">
+                <!-- Populated dynamically by JS -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Bottom Interactive Acoustic & Cymatics Control Console -->
+    <footer class="w-full z-30 px-4 py-2.5 glass-hud border-t border-purple-500/25">
+        <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-4">
+            
+            <!-- Left: Master Play/Pause & Breath Cycle Mode -->
+            <div class="flex items-center space-x-2.5">
+                <button id="playPauseBtn" onclick="toggleAudio()" class="flex items-center space-x-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-semibold text-xs uppercase tracking-wider shadow-lg shadow-purple-700/40 border border-purple-400/30 transition-all">
+                    <svg id="playPauseIcon" class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M8 5v14l11-7z"/>
+                    </svg>
+                    <span id="playPauseText">Start Chant</span>
+                </button>
+
+                <!-- Breath Cadence Selector -->
+                <div class="flex items-center bg-purple-950/60 p-1 rounded-xl border border-purple-800/40">
+                    <button onclick="setBreathMode('auto')" id="breathMode-auto" class="px-2.5 py-1.5 text-[11px] font-medium rounded-lg bg-purple-600 text-white transition">
+                        Auto Cycle (12.5s)
+                    </button>
+                    <button onclick="setBreathMode('hold')" id="breathMode-hold" class="px-2.5 py-1.5 text-[11px] font-medium rounded-lg text-purple-300 hover:text-white transition">
+                        Continuous Chant
+                    </button>
+                </div>
+            </div>
+
+            <!-- Center/Right: Precision Acoustic & Physics Sliders -->
+            <div class="flex flex-wrap items-center gap-4 sm:gap-6 flex-grow justify-end">
+                
+                <!-- Slider 1: 132Hz AUM Vocal Choir Level -->
+                <div class="flex flex-col w-28 sm:w-32">
+                    <div class="flex justify-between text-[11px] mb-1">
+                        <span class="text-purple-300 font-medium">AUM Choir</span>
+                        <span id="choirVolLabel" class="font-mono-tech text-purple-200">90%</span>
+                    </div>
+                    <input type="range" id="choirSlider" min="0" max="100" value="90" oninput="updateSynthParams()">
+                </div>
+
+                <!-- Slider 2: Vowel Formant Morph (Oooo <-> Mmmm) -->
+                <div class="flex flex-col w-32 sm:w-36">
+                    <div class="flex justify-between text-[11px] mb-1">
+                        <span class="text-purple-300 font-medium">Vowel Morph</span>
+                        <span id="vowelMorphLabel" class="font-mono-tech text-emerald-300">Auto (O→M)</span>
+                    </div>
+                    <input type="range" id="vowelSlider" min="0" max="100" value="20" oninput="onManualVowelInput(this.value)">
+                </div>
+
+                <!-- Slider 3: Primary Healing Harmonic Shimmer -->
+                <div class="flex flex-col w-28 sm:w-32">
+                    <div class="flex justify-between text-[11px] mb-1">
+                        <span id="primaryLayerTitle" class="text-purple-300 font-medium">528Hz Layer</span>
+                        <span id="layer528Label" class="font-mono-tech text-purple-200">28%</span>
+                    </div>
+                    <input type="range" id="layer528Slider" min="0" max="100" value="28" oninput="updateSynthParams()">
+                </div>
+
+                <!-- Slider 4: Secondary Cleansing / Fifth Harmonic Layer -->
+                <div class="flex flex-col w-28 sm:w-32">
+                    <div class="flex justify-between text-[11px] mb-1">
+                        <span id="secondaryLayerTitle" class="text-purple-300 font-medium">741Hz Layer</span>
+                        <span id="layer741Label" class="font-mono-tech text-purple-200">18%</span>
+                    </div>
+                    <input type="range" id="layer741Slider" min="0" max="100" value="18" oninput="updateSynthParams()">
+                </div>
+
+                <!-- Slider 5: Water Viscosity / Wave Sharpness -->
+                <div class="flex flex-col w-28 sm:w-32">
+                    <div class="flex justify-between text-[11px] mb-1">
+                        <span class="text-purple-300 font-medium">Wave Drive</span>
+                        <span id="driveLabel" class="font-mono-tech text-purple-200">100%</span>
+                    </div>
+                    <input type="range" id="driveSlider" min="30" max="160" value="100" oninput="updateDriveParam(this.value)">
+                </div>
+
+            </div>
+        </div>
+    </footer>
+
+    <!-- Toast Notification -->
+    <div id="toastBox" class="fixed top-16 right-5 z-50 transform translate-x-[130%] transition-transform duration-300 glass-pill px-4 py-2.5 rounded-xl border border-purple-400/40 shadow-2xl flex items-center space-x-2.5 pointer-events-none">
+        <span class="w-2 h-2 rounded-full bg-purple-400 animate-ping"></span>
+        <span id="toastText" class="text-xs font-medium text-purple-100">System Ready</span>
+    </div>
+
+    <script>
+        /* ============================================================================
+         * 1. RESEARCHED HEALING FREQUENCIES DATABASE & COLOR PALETTES
+         *    Every frequency has:
+         *    - Mathematical sub-harmonic vocal chant root (rootFreq) for natural AUM choir
+         *    - Primary & Secondary crystal harmonic overtone frequencies
+         *    - Specific Faraday standing-wave azimuthal symmetries (symA, symB, radialK)
+         *    - Distinct bioluminescent RGB color theme for both CymaScope Water & 3D Brain
+         * ============================================================================ */
+        const HEALING_FREQUENCIES = [
+            {
+                id: '528_741_dual',
+                shortLabel: '528+741Hz OM',
+                name: '528 Hz + 741 Hz Original AUM Dual',
+                tag: '132Hz Root • 528Hz • 741Hz',
+                subtitle: 'DNA Repair & Pineal Awakening • Classic Ultraviolet CymaScope',
+                description: 'Original video tuning: 132 Hz (528/4) baritone AUM root layered with 528 Hz cellular transformation and 741 Hz cleansing harmonics.',
+                neuralTarget: 'Thalamocortical Entrainment • 528Hz & 741Hz Synaptic Coherence',
+                rootFreq: 132.0,      // 528 / 4
+                primaryFreq: 528.0,
+                secondaryFreq: 741.0,
+                formantShift: 1.0,
+                symA: 6.0,
+                symB: 12.0,
+                radialK: 28.0,
+                hex: '#a855f7',
+                deepWater: [0.035, 0.015, 0.09],
+                waterPrimary: [0.46, 0.25, 0.92],
+                waterAccent: [0.76, 0.65, 1.00],
+                cortexColor: [0.20, 0.83, 0.60],
+                synapseDeep: [0.58, 0.22, 0.94],
+                synapseBright: [0.94, 0.50, 1.00]
+            },
+            {
+                id: '174hz',
+                shortLabel: '174 Hz',
+                name: '174 Hz Foundation & Pain Relief',
+                tag: '87Hz Root • 174Hz • 348Hz',
+                subtitle: 'Anesthetic Cellular Grounding • Deep Ruby-Crimson Cymatics',
+                description: 'Lowest Solfeggio tone. Acts as a natural energetic anesthetic, relaxing neuro-muscular tension and grounding the vagus nerve.',
+                neuralTarget: 'Brainstem & Vagal Autonomic Soothing • 174Hz Delta/Theta Bridge',
+                rootFreq: 87.0,       // 174 / 2 (Deep Tibetan monk bass)
+                primaryFreq: 174.0,
+                secondaryFreq: 348.0,
+                formantShift: 0.88,
+                symA: 3.0,
+                symB: 6.0,
+                radialK: 19.0,
+                hex: '#f43f5e',
+                deepWater: [0.08, 0.01, 0.03],
+                waterPrimary: [0.85, 0.16, 0.34],
+                waterAccent: [1.00, 0.62, 0.72],
+                cortexColor: [0.95, 0.32, 0.45],
+                synapseDeep: [0.88, 0.12, 0.30],
+                synapseBright: [1.00, 0.68, 0.55]
+            },
+            {
+                id: '285hz',
+                shortLabel: '285 Hz',
+                name: '285 Hz Tissue Restoration & Vitality',
+                tag: '142.5Hz Root • 285Hz • 570Hz',
+                subtitle: 'Cellular Memory & Organ Regeneration • Solar Copper-Tangerine',
+                description: 'Researched for energetic tissue restructuring and rapid recovery, encouraging cells to return to their optimal structural blueprint.',
+                neuralTarget: 'Somatosensory Cortex & Hypothalamic Homeostasis • 285Hz',
+                rootFreq: 142.5,      // 285 / 2
+                primaryFreq: 285.0,
+                secondaryFreq: 570.0,
+                formantShift: 0.95,
+                symA: 4.0,
+                symB: 8.0,
+                radialK: 22.0,
+                hex: '#f97316',
+                deepWater: [0.08, 0.025, 0.005],
+                waterPrimary: [0.92, 0.38, 0.08],
+                waterAccent: [1.00, 0.78, 0.45],
+                cortexColor: [0.96, 0.55, 0.20],
+                synapseDeep: [0.90, 0.32, 0.06],
+                synapseBright: [1.00, 0.84, 0.42]
+            },
+            {
+                id: '396hz',
+                shortLabel: '396 Hz',
+                name: '396 Hz Liberation from Fear & Stress (Ut)',
+                tag: '99Hz Root • 396Hz • 594Hz',
+                subtitle: 'Amygdala Down-Regulation & Security • Scarlet Coral Mandala',
+                description: 'First classic Solfeggio tone (Ut). Dissolves subconscious anxiety and cortisol loops while anchoring deep emotional stability.',
+                neuralTarget: 'Limbic System & Amygdala Fear-Extinction Pathways • 396Hz',
+                rootFreq: 99.0,       // 396 / 4
+                primaryFreq: 396.0,
+                secondaryFreq: 594.0,
+                formantShift: 0.92,
+                symA: 5.0,
+                symB: 10.0,
+                radialK: 24.5,
+                hex: '#ef4444',
+                deepWater: [0.08, 0.015, 0.015],
+                waterPrimary: [0.88, 0.22, 0.20],
+                waterAccent: [1.00, 0.68, 0.60],
+                cortexColor: [0.35, 0.80, 0.65],
+                synapseDeep: [0.92, 0.20, 0.22],
+                synapseBright: [1.00, 0.72, 0.58]
+            },
+            {
+                id: '417hz',
+                shortLabel: '417 Hz',
+                name: '417 Hz Neural Clearing & Change (Re)',
+                tag: '104.25Hz Root • 417Hz • 625.5Hz',
+                subtitle: 'Neuroplasticity & Trauma Unblocking • Radiant Amber Gold',
+                description: 'Second Solfeggio tone (Re). Facilitates neuroplasticity, undoing stagnant behavioral loops and energizing creative renewal.',
+                neuralTarget: 'Anterior Cingulate Cortex & Neuroplasticity • 417Hz Resonance',
+                rootFreq: 104.25,     // 417 / 4
+                primaryFreq: 417.0,
+                secondaryFreq: 625.5,
+                formantShift: 0.96,
+                symA: 6.0,
+                symB: 12.0,
+                radialK: 26.0,
+                hex: '#f59e0b',
+                deepWater: [0.07, 0.04, 0.005],
+                waterPrimary: [0.88, 0.58, 0.06],
+                waterAccent: [1.00, 0.90, 0.50],
+                cortexColor: [0.95, 0.75, 0.22],
+                synapseDeep: [0.85, 0.50, 0.05],
+                synapseBright: [1.00, 0.94, 0.55]
+            },
+            {
+                id: '432hz',
+                shortLabel: '432 Hz',
+                name: '432 Hz Cosmic Natural Tuning (108Hz OM)',
+                tag: '108Hz Sacred Root • 432Hz • 648Hz',
+                subtitle: 'Schumann & Mathematical Nature Harmonic • Celestial Jade-Teal',
+                description: 'Built on the sacred 108 Hz AUM fundamental (432 / 4 = 108 Hz). Synchronizes binaural alpha waves with Earth’s natural acoustic geometry.',
+                neuralTarget: 'Bi-Hemispheric Alpha Wave Synchronization • 108Hz / 432Hz',
+                rootFreq: 108.0,      // Sacred 108 Hz (432 / 4)
+                primaryFreq: 432.0,
+                secondaryFreq: 648.0,
+                formantShift: 0.97,
+                symA: 8.0,
+                symB: 16.0,
+                radialK: 27.0,
+                hex: '#10b981',
+                deepWater: [0.008, 0.06, 0.045],
+                waterPrimary: [0.06, 0.74, 0.52],
+                waterAccent: [0.58, 0.98, 0.84],
+                cortexColor: [0.12, 0.85, 0.68],
+                synapseDeep: [0.05, 0.68, 0.55],
+                synapseBright: [0.65, 1.00, 0.88]
+            },
+            {
+                id: '528hz_pure',
+                shortLabel: '528 Hz Pure',
+                name: '528 Hz Miracle & DNA Repair (Mi)',
+                tag: '132Hz Root • 528Hz • 792Hz',
+                subtitle: 'Biochemical Stress Reduction & Vitality • Bioluminescent Emerald-Lime',
+                description: 'Known as the "Love & Miracle Frequency" (Mi). Peer-reviewed studies show 528 Hz reduces endocrine cortisol and boosts cellular oxytocin.',
+                neuralTarget: 'Prefrontal-Heart Vagal Coherence & Cellular Repair • 528Hz',
+                rootFreq: 132.0,      // 528 / 4
+                primaryFreq: 528.0,
+                secondaryFreq: 792.0,
+                formantShift: 1.0,
+                symA: 6.0,
+                symB: 18.0,
+                radialK: 29.5,
+                hex: '#22c55e',
+                deepWater: [0.01, 0.065, 0.02],
+                waterPrimary: [0.16, 0.78, 0.32],
+                waterAccent: [0.74, 0.98, 0.52],
+                cortexColor: [0.32, 0.92, 0.45],
+                synapseDeep: [0.15, 0.75, 0.28],
+                synapseBright: [0.82, 1.00, 0.55]
+            },
+            {
+                id: '639hz',
+                shortLabel: '639 Hz',
+                name: '639 Hz Heart Coherence & Connection (Fa)',
+                tag: '159.75Hz Root • 639Hz • 958.5Hz',
+                subtitle: 'Empathy, Oxytocin & Harmonious Relationships • Rose Quartz Pink',
+                description: 'Fourth Solfeggio tone (Fa). Fosters interpersonal harmony, emotional warmth, and heart-brain electromagnetic coherence.',
+                neuralTarget: 'Insular Cortex & Heart-Brain Oxytocin Circuitry • 639Hz',
+                rootFreq: 159.75,     // 639 / 4
+                primaryFreq: 639.0,
+                secondaryFreq: 426.0,
+                formantShift: 1.06,
+                symA: 7.0,
+                symB: 14.0,
+                radialK: 31.0,
+                hex: '#ec4899',
+                deepWater: [0.075, 0.01, 0.045],
+                waterPrimary: [0.88, 0.22, 0.58],
+                waterAccent: [1.00, 0.70, 0.88],
+                cortexColor: [0.95, 0.42, 0.72],
+                synapseDeep: [0.85, 0.18, 0.55],
+                synapseBright: [1.00, 0.78, 0.92]
+            },
+            {
+                id: '741hz_pure',
+                shortLabel: '741 Hz Pure',
+                name: '741 Hz Detox & Intuitive Awakening (Sol)',
+                tag: '185.25Hz Root • 741Hz • 370.5Hz',
+                subtitle: 'Glymphatic Cleansing & Mental Clarity • Electric Cyan-Sapphire',
+                description: 'Fifth Solfeggio tone (Sol). Associated with cellular toxin clearance, electromagnetic hygiene, and sharp problem-solving intuition.',
+                neuralTarget: 'Glymphatic Clearance & Parietal-Frontal Clarity • 741Hz',
+                rootFreq: 123.5,      // 741 / 6 (Warm baritone sixth sub-harmonic)
+                primaryFreq: 741.0,
+                secondaryFreq: 370.5,
+                formantShift: 1.04,
+                symA: 9.0,
+                symB: 18.0,
+                radialK: 33.5,
+                hex: '#06b6d4',
+                deepWater: [0.008, 0.045, 0.08],
+                waterPrimary: [0.05, 0.68, 0.88],
+                waterAccent: [0.62, 0.95, 1.00],
+                cortexColor: [0.15, 0.82, 0.95],
+                synapseDeep: [0.06, 0.58, 0.90],
+                synapseBright: [0.68, 0.96, 1.00]
+            },
+            {
+                id: '852hz',
+                shortLabel: '852 Hz',
+                name: '852 Hz Pineal Insight & Spiritual Order (La)',
+                tag: '106.5Hz Root • 852Hz • 426Hz',
+                subtitle: 'Higher Intuition & Inner Stillness • Deep Astral Indigo',
+                description: 'Sixth Solfeggio tone (La).Quiets overactive default-mode network chatter and awakens deep contemplative insight.',
+                neuralTarget: 'Default Mode Network Quieting & Pineal Resonance • 852Hz',
+                rootFreq: 106.5,      // 852 / 8
+                primaryFreq: 852.0,
+                secondaryFreq: 426.0,
+                formantShift: 1.02,
+                symA: 10.0,
+                symB: 20.0,
+                radialK: 36.0,
+                hex: '#6366f1',
+                deepWater: [0.02, 0.02, 0.095],
+                waterPrimary: [0.34, 0.36, 0.95],
+                waterAccent: [0.72, 0.78, 1.00],
+                cortexColor: [0.45, 0.55, 0.98],
+                synapseDeep: [0.32, 0.30, 0.92],
+                synapseBright: [0.78, 0.82, 1.00]
+            },
+            {
+                id: '963hz',
+                shortLabel: '963 Hz',
+                name: '963 Hz Crown Activation & Unity (Si)',
+                tag: '120.38Hz Root • 963Hz • 481.5Hz',
+                subtitle: 'Pineal Crown & Gamma Synchrony • Iridescent Pearl Gold',
+                description: 'Highest Solfeggio tone ("Frequency of the Gods"). Inspires peak gamma-wave meditative unity, luminous clarity, and bio-field harmony.',
+                neuralTarget: 'Global Cortical Gamma Synchrony & Crown Activation • 963Hz',
+                rootFreq: 120.375,    // 963 / 8
+                primaryFreq: 963.0,
+                secondaryFreq: 481.5,
+                formantShift: 1.05,
+                symA: 12.0,
+                symB: 24.0,
+                radialK: 39.0,
+                hex: '#eab308',
+                deepWater: [0.065, 0.045, 0.02],
+                waterPrimary: [0.88, 0.68, 0.18],
+                waterAccent: [1.00, 0.96, 0.78],
+                cortexColor: [0.95, 0.82, 0.38],
+                synapseDeep: [0.85, 0.58, 0.25],
+                synapseBright: [1.00, 0.98, 0.82]
+            }
+        ];
+
+        let activeFreqIndex = 0;
+        let autoFreqJourney = false;
+        let lastCycleIndex = 0;
+
+        // Smoothly interpolated visual parameters for 60 FPS color & geometry transitions
+        let currentTheme = {
+            symA: 6.0,
+            symB: 12.0,
+            radialK: 28.0,
+            deepWater: new THREE.Vector3(0.035, 0.015, 0.09),
+            waterPrimary: new THREE.Vector3(0.46, 0.25, 0.92),
+            waterAccent: new THREE.Vector3(0.76, 0.65, 1.00),
+            cortexColor: new THREE.Vector3(0.20, 0.83, 0.60),
+            synapseDeep: new THREE.Vector3(0.58, 0.22, 0.94),
+            synapseBright: new THREE.Vector3(0.94, 0.50, 1.00)
+        };
+
+        /* ============================================================================
+         * 1B. STATE & UI CONTROLS
+         * ============================================================================ */
+        let isAudioPlaying = false;
+        let audioInitialized = false;
+        let breathMode = 'auto'; // 'auto' (12.5s cycle matching reference video) or 'hold'
+        let breathStartTime = 0;
+        const BREATH_CYCLE_DURATION = 12.5;
+
+        // Real-time smoothed acoustic envelope & formant state
+        let currentVocalEnv = 0.0;      // 0.0 (silent/24-LED dots) -> 1.0 (full chant)
+        let currentVowelMorph = 0.0;    // 0.0 = Open "OOOO", 1.0 = Closed nasal "MMMM"
+        let currentResidualSlosh = 0.0; // Gentle fluid motion immediately after voice stops
+        let waterDriveScale = 1.0;
+
+        function buildFrequencySelectorUI() {
+            const container = document.getElementById('freqSelectorContainer');
+            if (!container) return;
+            container.innerHTML = '';
+
+            HEALING_FREQUENCIES.forEach((f, idx) => {
+                const btn = document.createElement('button');
+                btn.id = `freqBtn-${idx}`;
+                btn.onclick = () => selectHealingFrequency(idx, true);
+                const isSelected = idx === activeFreqIndex;
+                btn.className = `px-2.5 py-1 rounded-xl text-[11px] font-mono-tech font-medium shrink-0 transition-all duration-200 flex items-center space-x-1.5 border ${
+                    isSelected
+                        ? 'bg-white/15 text-white shadow-lg scale-[1.03]'
+                        : 'bg-black/40 text-gray-300 hover:text-white hover:bg-white/5 border-white/10'
+                }`;
+                if (isSelected) {
+                    btn.style.borderColor = f.hex;
+                    btn.style.boxShadow = `0 0 14px -2px ${f.hex}66`;
+                }
+                btn.innerHTML = `
+                    <span class="w-2 h-2 rounded-full shrink-0" style="background-color: ${f.hex}; box-shadow: 0 0 6px ${f.hex};"></span>
+                    <span>${f.shortLabel}</span>
+                `;
+                container.appendChild(btn);
+            });
+        }
+
+        function selectHealingFrequency(index, userTriggered = false) {
+            activeFreqIndex = (index + HEALING_FREQUENCIES.length) % HEALING_FREQUENCIES.length;
+            const preset = HEALING_FREQUENCIES[activeFreqIndex];
+
+            // Refresh Selector Buttons
+            buildFrequencySelectorUI();
+
+            // Update Header & Telemetry Badges
+            const headerTag = document.getElementById('headerFreqTag');
+            const headerSub = document.getElementById('headerSubTitle');
+            const brainReadout = document.getElementById('brainTelemetryReadout');
+            const cardTitle = document.getElementById('cardTitle');
+            const cardDesc = document.getElementById('cardDesc');
+            const cardDot = document.getElementById('cardColorDot');
+            const primaryLayerTitle = document.getElementById('primaryLayerTitle');
+            const secondaryLayerTitle = document.getElementById('secondaryLayerTitle');
+
+            if (headerTag) {
+                headerTag.innerText = preset.tag;
+                headerTag.style.borderColor = preset.hex + '88';
+                headerTag.style.color = '#ffffff';
+            }
+            if (headerSub) headerSub.innerText = preset.subtitle;
+            if (brainReadout) brainReadout.innerText = preset.neuralTarget;
+            if (cardTitle) cardTitle.innerText = preset.name;
+            if (cardDesc) cardDesc.innerText = preset.description;
+            if (cardDot) {
+                cardDot.style.backgroundColor = preset.hex;
+                cardDot.style.boxShadow = `0 0 8px ${preset.hex}`;
+            }
+            if (primaryLayerTitle) primaryLayerTitle.innerText = `${preset.primaryFreq}Hz Layer`;
+            if (secondaryLayerTitle) secondaryLayerTitle.innerText = `${preset.secondaryFreq}Hz Layer`;
+
+            // Retune Live Web Audio Oscillators smoothly
+            retuneAudioToPreset(preset);
+
+            if (userTriggered) {
+                showToast(`Tuned to ${preset.name}`);
+            }
+        }
+
+        function toggleAutoFreqJourney() {
+            autoFreqJourney = !autoFreqJourney;
+            const btn = document.getElementById('autoJourneyBtn');
+            if (autoFreqJourney) {
+                btn.className = "px-2.5 py-1 rounded-lg text-[10px] font-mono-tech uppercase tracking-wider bg-purple-600 text-white border border-purple-300 shadow shadow-purple-500/40 transition flex items-center space-x-1";
+                btn.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-emerald-300 animate-ping"></span><span>Journey: Auto</span>`;
+                showToast("Auto Healing Journey Enabled — Changes Frequency Each Breath");
+            } else {
+                btn.className = "px-2.5 py-1 rounded-lg text-[10px] font-mono-tech uppercase tracking-wider bg-purple-950/80 text-purple-300 border border-purple-700/50 hover:border-purple-400 hover:text-white transition flex items-center space-x-1";
+                btn.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-purple-400"></span><span>Journey: Off</span>`;
+                showToast("Locked to Single Healing Frequency");
+            }
+        }
+
+        function showToast(msg) {
+            const box = document.getElementById('toastBox');
+            document.getElementById('toastText').innerText = msg;
+            box.classList.remove('translate-x-[130%]');
+            clearTimeout(window._toastTimer);
+            window._toastTimer = setTimeout(() => {
+                box.classList.add('translate-x-[130%]');
+            }, 3000);
+        }
+
+        function setViewportLayout(layout) {
+            const dishPane = document.getElementById('dishPane');
+            const brainPane = document.getElementById('brainPane');
+            ['split', 'dish', 'brain'].forEach(id => {
+                const btn = document.getElementById('layoutBtn-' + id);
+                if (id === layout) {
+                    btn.className = "px-3 py-1 text-xs font-medium rounded-lg transition-all bg-purple-600 text-white shadow shadow-purple-600/40";
+                } else {
+                    btn.className = "px-3 py-1 text-xs font-medium rounded-lg transition-all text-purple-300 hover:text-white";
+                }
+            });
+
+            if (layout === 'split') {
+                dishPane.className = "relative w-full h-[54%] lg:h-full lg:w-1/2 flex items-center justify-center bg-black overflow-hidden border-b lg:border-b-0 lg:border-r border-purple-950/60 transition-all duration-300";
+                brainPane.className = "relative w-full h-[46%] lg:h-full lg:w-1/2 flex items-center justify-center bg-[#030108] overflow-hidden transition-all duration-300";
+            } else if (layout === 'dish') {
+                dishPane.className = "relative w-full h-full flex items-center justify-center bg-black overflow-hidden transition-all duration-300";
+                brainPane.className = "hidden";
+            } else if (layout === 'brain') {
+                dishPane.className = "hidden";
+                brainPane.className = "relative w-full h-full flex items-center justify-center bg-[#030108] overflow-hidden transition-all duration-300";
+            }
+            setTimeout(onWindowResize, 50);
+            setTimeout(onWindowResize, 320);
+        }
+
+        function setBreathMode(mode) {
+            breathMode = mode;
+            const autoBtn = document.getElementById('breathMode-auto');
+            const holdBtn = document.getElementById('breathMode-hold');
+            const vowelLabel = document.getElementById('vowelMorphLabel');
+
+            if (mode === 'auto') {
+                autoBtn.className = "px-2.5 py-1.5 text-[11px] font-medium rounded-lg bg-purple-600 text-white transition";
+                holdBtn.className = "px-2.5 py-1.5 text-[11px] font-medium rounded-lg text-purple-300 hover:text-white transition";
+                vowelLabel.innerText = "Auto (O→M)";
+                breathStartTime = performance.now() * 0.001;
+                showToast("Auto Breath Cycle (12.5s Oooo → Mmmm → 24-LED Settle)");
+            } else {
+                holdBtn.className = "px-2.5 py-1.5 text-[11px] font-medium rounded-lg bg-purple-600 text-white transition";
+                autoBtn.className = "px-2.5 py-1.5 text-[11px] font-medium rounded-lg text-purple-300 hover:text-white transition";
+                const v = parseInt(document.getElementById('vowelSlider').value, 10);
+                vowelLabel.innerText = v < 50 ? `Oooo (${100 - v}%)` : `Mmmm (${v}%)`;
+                showToast("Continuous Chant Mode Active");
+            }
+        }
+
+        function onManualVowelInput(val) {
+            if (breathMode !== 'hold') {
+                setBreathMode('hold');
+            }
+            const v = parseInt(val, 10);
+            currentVowelMorph = v / 100.0;
+            document.getElementById('vowelMorphLabel').innerText = v < 50 ? `Oooo (${100 - v}%)` : `Mmmm (${v}%)`;
+        }
+
+        function triggerFreshBreath() {
+            breathStartTime = performance.now() * 0.001;
+            if (!isAudioPlaying) {
+                startExperience();
+            } else {
+                showToast("New OM Mantra Breath Cycle Initiated");
+            }
+        }
+
+        function updateDriveParam(val) {
+            waterDriveScale = parseFloat(val) / 100.0;
+            document.getElementById('driveLabel').innerText = val + '%';
+        }
+
+        /* ============================================================================
+         * 2. PROCEDURAL GLOTTAL CHOIR FORMANT & SOLFEGGIO WEB AUDIO ENGINE
+         *    - Root Fundamental: 132.0 Hz (Exact 528 Hz / 4 Baritone OM Chant)
+         *    - Sub-Bass Octave: 66.0 Hz (528 Hz / 8 Warm Chest Resonance)
+         *    - Parallel Vocal Tract Formant Filters (F1, F2, F3, Nasal) morphing OOOO -> MMMM
+         *    - Soft Singing-Bowl Overtones at 528 Hz & 741 Hz (Never harsh!)
+         *    - Procedural Stereo Cathedral Reverb Impulse Response
+         * ============================================================================ */
+        let audioCtx = null;
+        let masterGain = null;
+        let breathEnvGain = null;
+        let choirBusGain = null;
+        let formantF1, formantF2, formantF3, formantNasal, warmthLowpass;
+        let gainF1, gainF2, gainF3, gainNasal;
+        let gain528, gain741;
+        let analyser = null;
+        let freqData = null;
+        let timeData = null;
+
+        // Stored oscillator references so we can smoothly glide frequencies in real time
+        let choirOscNodes = [];
+        let oscPrimaryA = null, oscPrimaryB = null;
+        let oscSecondaryA = null, oscSecondaryB = null;
+        let breathBandFilter = null;
+
+        function createCathedralImpulse(ctx, duration = 3.6, decay = 2.4) {
+            const rate = ctx.sampleRate;
+            const length = Math.floor(rate * duration);
+            const impulse = ctx.createBuffer(2, length, rate);
+            for (let ch = 0; ch < 2; ch++) {
+                const data = impulse.getChannelData(ch);
+                let lastSample = 0.0;
+                for (let i = 0; i < length; i++) {
+                    const t = i / rate;
+                    const env = Math.pow(1.0 - i / length, decay) * (1.0 - Math.exp(-t * 18.0));
+                    // Low-passed warm velvet noise for smooth cathedral tail
+                    const white = Math.random() * 2.0 - 1.0;
+                    lastSample = 0.94 * lastSample + 0.06 * white;
+                    data[i] = lastSample * env * 1.35;
+                }
+            }
+            return impulse;
+        }
+
+        function createGlottalPeriodicWave(ctx) {
+            // Natural human vocal fold harmonic spectrum (rich rolloff, warm odd/even harmonics)
+            const numHarmonics = 32;
+            const real = new Float32Array(numHarmonics);
+            const imag = new Float32Array(numHarmonics);
+            real[0] = 0;
+            imag[0] = 0;
+            for (let n = 1; n < numHarmonics; n++) {
+                // Rosenberg glottal pulse spectral envelope ~ 1 / (n^1.35)
+                const amp = 1.0 / Math.pow(n, 1.32);
+                imag[n] = amp * (n % 2 === 1 ? 1.0 : 0.85);
+            }
+            return ctx.createPeriodicWave(real, imag, { disableNormalization: false });
+        }
+
+        function initAudioEngine() {
+            if (audioInitialized) return;
+            const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+            audioCtx = new AudioContextClass();
+
+            masterGain = audioCtx.createGain();
+            masterGain.gain.setValueAtTime(0.85, audioCtx.currentTime);
+
+            analyser = audioCtx.createAnalyser();
+            analyser.fftSize = 1024;
+            analyser.smoothingTimeConstant = 0.82;
+            freqData = new Uint8Array(analyser.frequencyBinCount);
+            timeData = new Uint8Array(analyser.fftSize);
+
+            // Breath Envelope Gain controls the cyclic chant cadence
+            breathEnvGain = audioCtx.createGain();
+            breathEnvGain.gain.setValueAtTime(0.0001, audioCtx.currentTime);
+
+            // User-adjustable Choir Master Bus
+            choirBusGain = audioCtx.createGain();
+            choirBusGain.gain.setValueAtTime(0.9, audioCtx.currentTime);
+
+            // Source Summing Node for the 5 Glottal Choir Voices + Sub-Bass
+            const glottalSum = audioCtx.createGain();
+            glottalSum.gain.setValueAtTime(0.28, audioCtx.currentTime);
+
+            const glottalWave = createGlottalPeriodicWave(audioCtx);
+            const now = audioCtx.currentTime;
+            const preset = HEALING_FREQUENCIES[activeFreqIndex];
+            const root = preset.rootFreq;
+
+            // 5 Detuned Baritone Choir Voices locked to the active Healing Frequency's root sub-harmonic
+            const choirVoices = [
+                { mult: 1.0, detune: -6.5, gain: 0.95, vibRate: 5.1, vibDepth: 0.48 },
+                { mult: 1.0, detune:  0.0, gain: 1.00, vibRate: 5.4, vibDepth: 0.42 },
+                { mult: 1.0, detune: +6.8, gain: 0.95, vibRate: 4.9, vibDepth: 0.50 },
+                { mult: 0.5, detune: -2.0, gain: 0.82, vibRate: 4.5, vibDepth: 0.22 }, // Deep sub-octave chest resonance
+                { mult: 1.5, detune: +3.0, gain: 0.30, vibRate: 5.6, vibDepth: 0.55 }  // Pure 5th harmonic warmth
+            ];
+
+            choirOscNodes = [];
+            choirVoices.forEach(v => {
+                const osc = audioCtx.createOscillator();
+                osc.setPeriodicWave(glottalWave);
+                osc.frequency.setValueAtTime(root * v.mult, now);
+                osc.detune.setValueAtTime(v.detune, now);
+
+                // Natural Human Vocal Vibrato LFO
+                const vibOsc = audioCtx.createOscillator();
+                vibOsc.type = 'sine';
+                vibOsc.frequency.setValueAtTime(v.vibRate, now);
+                const vibGain = audioCtx.createGain();
+                vibGain.gain.setValueAtTime(v.vibDepth, now);
+                vibOsc.connect(vibGain);
+                vibGain.connect(osc.frequency);
+
+                const vGain = audioCtx.createGain();
+                vGain.gain.setValueAtTime(v.gain, now);
+
+                osc.connect(vGain);
+                vGain.connect(glottalSum);
+
+                osc.start(now);
+                vibOsc.start(now);
+                choirOscNodes.push({ osc, mult: v.mult });
+            });
+
+            // Subtle Organic Breath Aspiration Noise (Filtered Pink-like Breath Texture)
+            const noiseBuf = audioCtx.createBuffer(1, audioCtx.sampleRate * 2, audioCtx.sampleRate);
+            const nData = noiseBuf.getChannelData(0);
+            let b0 = 0, b1 = 0, b2 = 0;
+            for (let i = 0; i < nData.length; i++) {
+                const w = Math.random() * 2 - 1;
+                b0 = 0.99 * b0 + w * 0.05;
+                b1 = 0.96 * b1 + w * 0.08;
+                b2 = 0.85 * b2 + w * 0.12;
+                nData[i] = (b0 + b1 + b2) * 0.15;
+            }
+            const noiseNode = audioCtx.createBufferSource();
+            noiseNode.buffer = noiseBuf;
+            noiseNode.loop = true;
+            breathBandFilter = audioCtx.createBiquadFilter();
+            breathBandFilter.type = 'bandpass';
+            breathBandFilter.frequency.setValueAtTime(preset.primaryFreq, now);
+            breathBandFilter.Q.setValueAtTime(3.0, now);
+            const breathNoiseGain = audioCtx.createGain();
+            breathNoiseGain.gain.setValueAtTime(0.05, now);
+            noiseNode.connect(breathBandFilter);
+            breathBandFilter.connect(breathNoiseGain);
+            breathNoiseGain.connect(glottalSum);
+            noiseNode.start(now);
+
+            // Parallel Vocal Tract Formant Filter Bank (Morphs smoothly from "OOOO" to "MMMM")
+            formantF1 = audioCtx.createBiquadFilter();
+            formantF1.type = 'bandpass';
+            formantF1.frequency.setValueAtTime(455, now);
+            formantF1.Q.setValueAtTime(5.2, now);
+            gainF1 = audioCtx.createGain();
+            gainF1.gain.setValueAtTime(1.15, now);
+
+            formantF2 = audioCtx.createBiquadFilter();
+            formantF2.type = 'bandpass';
+            formantF2.frequency.setValueAtTime(810, now);
+            formantF2.Q.setValueAtTime(6.0, now);
+            gainF2 = audioCtx.createGain();
+            gainF2.gain.setValueAtTime(0.90, now);
+
+            formantF3 = audioCtx.createBiquadFilter();
+            formantF3.type = 'bandpass';
+            formantF3.frequency.setValueAtTime(2420, now);
+            formantF3.Q.setValueAtTime(7.5, now);
+            gainF3 = audioCtx.createGain();
+            gainF3.gain.setValueAtTime(0.22, now);
+
+            // Nasal Resonance Filter (Blooms during the closed-lip "MMMM" phase)
+            formantNasal = audioCtx.createBiquadFilter();
+            formantNasal.type = 'bandpass';
+            formantNasal.frequency.setValueAtTime(264, now); // 2nd harmonic of 132Hz
+            formantNasal.Q.setValueAtTime(6.5, now);
+            gainNasal = audioCtx.createGain();
+            gainNasal.gain.setValueAtTime(0.35, now);
+
+            // Deep Chest Body Fundamental Pass-through (Lowpass at 190 Hz so 66Hz & 132Hz stay full and warm)
+            const chestLowpass = audioCtx.createBiquadFilter();
+            chestLowpass.type = 'lowpass';
+            chestLowpass.frequency.setValueAtTime(195, now);
+            const chestGain = audioCtx.createGain();
+            chestGain.gain.setValueAtTime(0.65, now);
+
+            // Connect Glottal Sum to Parallel Formants
+            glottalSum.connect(formantF1); formantF1.connect(gainF1);
+            glottalSum.connect(formantF2); formantF2.connect(gainF2);
+            glottalSum.connect(formantF3); formantF3.connect(gainF3);
+            glottalSum.connect(formantNasal); formantNasal.connect(gainNasal);
+            glottalSum.connect(chestLowpass); chestLowpass.connect(chestGain);
+
+            // Warmth Master Lowpass on Vocal Tract Output
+            warmthLowpass = audioCtx.createBiquadFilter();
+            warmthLowpass.type = 'lowpass';
+            warmthLowpass.frequency.setValueAtTime(2600, now);
+
+            gainF1.connect(warmthLowpass);
+            gainF2.connect(warmthLowpass);
+            gainF3.connect(warmthLowpass);
+            gainNasal.connect(warmthLowpass);
+            chestGain.connect(warmthLowpass);
+
+            warmthLowpass.connect(choirBusGain);
+            choirBusGain.connect(breathEnvGain);
+
+            // --- Subtle, Musical Crystal Singing Bowl Harmonic Overtones (Primary & Secondary Healing Frequencies) ---
+            oscPrimaryA = audioCtx.createOscillator();
+            oscPrimaryB = audioCtx.createOscillator();
+            oscPrimaryA.type = 'sine';
+            oscPrimaryB.type = 'sine';
+            oscPrimaryA.frequency.setValueAtTime(preset.primaryFreq, now);
+            oscPrimaryB.frequency.setValueAtTime(preset.primaryFreq + 0.45, now); // Gentle 0.45Hz Tibetan bowl shimmer
+
+            gain528 = audioCtx.createGain();
+            gain528.gain.setValueAtTime(0.032, now);
+
+            oscPrimaryA.connect(gain528);
+            oscPrimaryB.connect(gain528);
+            gain528.connect(breathEnvGain);
+            oscPrimaryA.start(now);
+            oscPrimaryB.start(now);
+
+            // Secondary Cleansing / Harmonic Overtone Layer
+            oscSecondaryA = audioCtx.createOscillator();
+            oscSecondaryB = audioCtx.createOscillator();
+            oscSecondaryA.type = 'sine';
+            oscSecondaryB.type = 'sine';
+            oscSecondaryA.frequency.setValueAtTime(preset.secondaryFreq, now);
+            oscSecondaryB.frequency.setValueAtTime(preset.secondaryFreq + 0.55, now);
+
+            gain741 = audioCtx.createGain();
+            gain741.gain.setValueAtTime(0.015, now);
+
+            oscSecondaryA.connect(gain741);
+            oscSecondaryB.connect(gain741);
+            gain741.connect(breathEnvGain);
+            oscSecondaryA.start(now);
+            oscSecondaryB.start(now);
+
+            // Cathedral Convolution Reverb + Dry/Wet Mix
+            const convolver = audioCtx.createConvolver();
+            convolver.buffer = createCathedralImpulse(audioCtx, 3.6, 2.3);
+
+            const dryGain = audioCtx.createGain();
+            dryGain.gain.setValueAtTime(0.72, now);
+            const wetGain = audioCtx.createGain();
+            wetGain.gain.setValueAtTime(0.52, now);
+
+            breathEnvGain.connect(dryGain);
+            breathEnvGain.connect(convolver);
+            convolver.connect(wetGain);
+
+            dryGain.connect(masterGain);
+            wetGain.connect(masterGain);
+
+            masterGain.connect(analyser);
+            analyser.connect(audioCtx.destination);
+
+            audioInitialized = true;
+            updateSynthParams();
+        }
+
+        function retuneAudioToPreset(preset) {
+            if (!audioInitialized || !audioCtx) return;
+            const now = audioCtx.currentTime;
+            // Smoothly glide the 5 choir oscillators to the new sub-harmonic vocal root
+            choirOscNodes.forEach(item => {
+                item.osc.frequency.setTargetAtTime(preset.rootFreq * item.mult, now, 0.22);
+            });
+            // Smoothly glide primary & secondary crystal singing bowl overtones
+            if (oscPrimaryA && oscPrimaryB) {
+                oscPrimaryA.frequency.setTargetAtTime(preset.primaryFreq, now, 0.22);
+                oscPrimaryB.frequency.setTargetAtTime(preset.primaryFreq + 0.45, now, 0.22);
+            }
+            if (oscSecondaryA && oscSecondaryB) {
+                oscSecondaryA.frequency.setTargetAtTime(preset.secondaryFreq, now, 0.22);
+                oscSecondaryB.frequency.setTargetAtTime(preset.secondaryFreq + 0.55, now, 0.22);
+            }
+            if (breathBandFilter) {
+                breathBandFilter.frequency.setTargetAtTime(preset.primaryFreq, now, 0.25);
+            }
+            if (formantNasal) {
+                formantNasal.frequency.setTargetAtTime(preset.rootFreq * 2.0, now, 0.22);
+            }
+        }
+
+        function updateSynthParams() {
+            const choirVal = parseFloat(document.getElementById('choirSlider').value);
+            const l528Val = parseFloat(document.getElementById('layer528Slider').value);
+            const l741Val = parseFloat(document.getElementById('layer741Slider').value);
+
+            document.getElementById('choirVolLabel').innerText = Math.round(choirVal) + '%';
+            document.getElementById('layer528Label').innerText = Math.round(l528Val) + '%';
+            document.getElementById('layer741Label').innerText = Math.round(l741Val) + '%';
+
+            if (!audioInitialized || !audioCtx) return;
+            const now = audioCtx.currentTime;
+            choirBusGain.gain.setTargetAtTime((choirVal / 100.0) * 1.15, now, 0.08);
+            // Keep 528Hz and 741Hz musical and balanced even at 100% slider
+            gain528.gain.setTargetAtTime(Math.pow(l528Val / 100.0, 1.5) * 0.14, now, 0.08);
+            gain741.gain.setTargetAtTime(Math.pow(l741Val / 100.0, 1.5) * 0.09, now, 0.08);
+        }
+
+        function startExperience() {
+            const overlay = document.getElementById('startOverlay');
+            overlay.classList.add('opacity-0', 'pointer-events-none');
+            if (!isAudioPlaying) {
+                toggleAudio();
+            }
+        }
+
+        function toggleAudio() {
+            if (!audioInitialized) {
+                initAudioEngine();
+            }
+            if (audioCtx && audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+
+            isAudioPlaying = !isAudioPlaying;
+            const btnText = document.getElementById('playPauseText');
+            const btnIcon = document.getElementById('playPauseIcon');
+            const statusDot = document.getElementById('statusDot');
+            const overlay = document.getElementById('startOverlay');
+
+            if (isAudioPlaying) {
+                overlay.classList.add('opacity-0', 'pointer-events-none');
+                btnText.innerText = "Pause Chant";
+                btnIcon.innerHTML = '<path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>';
+                statusDot.className = "absolute -top-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-emerald-400 ring-2 ring-black animate-ping";
+                breathStartTime = performance.now() * 0.001;
+                masterGain.gain.setTargetAtTime(0.85, audioCtx.currentTime, 0.25);
+                showToast("OM (AUM) 132Hz Formant Choir + 528Hz/741Hz Active");
+            } else {
+                btnText.innerText = "Resume Chant";
+                btnIcon.innerHTML = '<path d="M8 5v14l11-7z"/>';
+                statusDot.className = "absolute -top-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-amber-400 ring-2 ring-black";
+                if (breathEnvGain) {
+                    breathEnvGain.gain.setTargetAtTime(0.0001, audioCtx.currentTime, 0.25);
+                }
+                showToast("Chant Paused — Water Settling to 24-LED Ring");
+            }
+        }
+
+        /**
+         * Updates the cyclic OM (AUM) vocal breath envelope & vowel formants every frame
+         */
+        function updateBreathAndFormants(nowSec) {
+            const badge = document.getElementById('breathPhaseBadge');
+            const cymReadout = document.getElementById('cymaticsModeReadout');
+            const vowelSlider = document.getElementById('vowelSlider');
+
+            let targetEnv = 0.0;
+            let targetMorph = currentVowelMorph; // 0 = OOOO, 1 = MMMM
+            let targetSlosh = 0.0;
+
+            if (!isAudioPlaying) {
+                targetEnv = 0.0;
+                targetSlosh = 0.04;
+                badge.innerText = "PAUSED (24-LED RING)";
+                badge.className = "text-xs font-mono-tech font-semibold text-purple-300 min-w-[135px] text-center px-2 py-0.5 rounded-full bg-purple-950/60 border border-purple-500/30";
+            } else if (breathMode === 'hold') {
+                targetEnv = 1.0;
+                targetMorph = parseFloat(vowelSlider.value) / 100.0;
+                badge.innerText = targetMorph < 0.5 ? 'HOLD: "OOOO" CHANT' : 'HOLD: "MMMM" HUM';
+                badge.className = "text-xs font-mono-tech font-semibold text-fuchsia-300 min-w-[135px] text-center px-2 py-0.5 rounded-full bg-fuchsia-950/60 border border-fuchsia-500/40";
+            } else {
+                // Auto 12.5-second Breath Cycle matching the reference video
+                const elapsedTotal = Math.max(0, nowSec - breathStartTime);
+                const currentCycleIdx = Math.floor(elapsedTotal / BREATH_CYCLE_DURATION);
+                if (autoFreqJourney && currentCycleIdx !== lastCycleIndex) {
+                    lastCycleIndex = currentCycleIdx;
+                    selectHealingFrequency((activeFreqIndex + 1) % HEALING_FREQUENCIES.length, false);
+                }
+                const cycleTime = elapsedTotal % BREATH_CYCLE_DURATION;
+                const preset = HEALING_FREQUENCIES[activeFreqIndex];
+
+                if (cycleTime < 0.85) {
+                    // Phase 1: Smooth Vocal Attack ("Oooo...")
+                    const p = cycleTime / 0.85;
+                    targetEnv = Math.sin(p * Math.PI * 0.5);
+                    targetMorph = 0.05;
+                    badge.innerText = 'INHALE → "OOOO" ONSET';
+                    badge.className = "text-xs font-mono-tech font-semibold text-purple-200 min-w-[135px] text-center px-2 py-0.5 rounded-full bg-purple-900/60 border border-purple-400/40";
+                    cymReadout.innerText = `Mode: Radial Wavefront Expansion • f₀ = ${preset.rootFreq}Hz (${preset.shortLabel})`;
+                } else if (cycleTime < 5.0) {
+                    // Phase 2: Full Resonant "OOOO" Sustain (Drives complex Faraday petals)
+                    const p = (cycleTime - 0.85) / (5.0 - 0.85);
+                    targetEnv = 1.0;
+                    targetMorph = 0.05 + 0.20 * Math.sin(p * Math.PI * 0.5);
+                    badge.innerText = `CHANT: "OOOO" (${preset.primaryFreq}Hz)`;
+                    badge.className = "text-xs font-mono-tech font-semibold text-white min-w-[135px] text-center px-2 py-0.5 rounded-full bg-white/15 border border-white/40 shadow";
+                    cymReadout.innerText = `Mode: Azimuthal J_${preset.symA} + J_${preset.symB} Faraday Petals • ${preset.primaryFreq}Hz Resonance`;
+                } else if (cycleTime < 8.2) {
+                    // Phase 3: Transition to Closed-Lip Nasal "MMMM" Hum (Petals contract into ribbed central ring)
+                    const p = (cycleTime - 5.0) / (8.2 - 5.0);
+                    const smoothP = p * p * (3.0 - 2.0 * p);
+                    targetMorph = 0.25 + 0.75 * smoothP;
+                    targetEnv = p < 0.7 ? 0.92 : 0.92 * (1.0 - (p - 0.7) / 0.3);
+                    badge.innerText = `CHANT: "MMMM" (${preset.secondaryFreq}Hz)`;
+                    badge.className = "text-xs font-mono-tech font-semibold text-indigo-200 min-w-[135px] text-center px-2 py-0.5 rounded-full bg-indigo-950/80 border border-indigo-400/50";
+                    cymReadout.innerText = `Mode: Concentric J₀ Toroidal Ring Closure • Nasal Harmonic ${Math.round(preset.rootFreq * 2)}Hz`;
+                } else {
+                    // Phase 4: Silent Rest & Water Surface Settling into the 24-LED Dot Ring (8.2s -> 12.5s)
+                    const p = (cycleTime - 8.2) / (BREATH_CYCLE_DURATION - 8.2);
+                    targetEnv = 0.0;
+                    targetMorph = 1.0 - p * 0.8;
+                    targetSlosh = Math.exp(-p * 3.8) * 0.85;
+                    badge.innerText = p < 0.35 ? 'WATER SETTLING...' : 'REST (24-LED RING)';
+                    badge.className = "text-xs font-mono-tech font-semibold text-emerald-300 min-w-[135px] text-center px-2 py-0.5 rounded-full bg-emerald-950/60 border border-emerald-500/30";
+                    cymReadout.innerText = "Mode: Specular Equilibrium • 24 Discrete Overhead LED Point Reflections";
+                }
+
+                // Keep UI slider synced during auto mode
+                vowelSlider.value = Math.round(targetMorph * 100);
+            }
+
+            // Smoothly interpolate state variables for 60 FPS visual continuity
+            currentVocalEnv += (targetEnv - currentVocalEnv) * 0.08;
+            currentVowelMorph += (targetMorph - currentVowelMorph) * 0.08;
+            currentResidualSlosh += (targetSlosh - currentResidualSlosh) * 0.06;
+
+            // Update Web Audio Formant Filter Frequencies & Gains in Real Time
+            if (audioInitialized && audioCtx && isAudioPlaying) {
+                const now = audioCtx.currentTime;
+                const m = currentVowelMorph; // 0.0 = OOOO, 1.0 = MMMM
+                const fScale = HEALING_FREQUENCIES[activeFreqIndex].formantShift || 1.0;
+
+                // Apply breath envelope to Web Audio
+                breathEnvGain.gain.setTargetAtTime(Math.max(0.0001, currentVocalEnv), now, 0.04);
+
+                // Morph Formant 1: 455 Hz ("Oooo") -> 264 Hz ("Mmmm")
+                const f1Freq = (455.0 * (1.0 - m) + 264.0 * m) * fScale;
+                formantF1.frequency.setTargetAtTime(f1Freq, now, 0.05);
+
+                // Morph Formant 2: 810 Hz ("Oooo") -> 560 Hz ("Mmmm", attenuated)
+                const f2Freq = (810.0 * (1.0 - m) + 560.0 * m) * fScale;
+                formantF2.frequency.setTargetAtTime(f2Freq, now, 0.05);
+                gainF2.gain.setTargetAtTime(0.90 * (1.0 - 0.72 * m), now, 0.05);
+
+                // Formant 3 attenuates during closed-lip "Mmmm"
+                gainF3.gain.setTargetAtTime(0.22 * (1.0 - 0.88 * m), now, 0.05);
+
+                // Nasal Formant blooms during "Mmmm"
+                gainNasal.gain.setTargetAtTime(0.25 + 0.85 * m, now, 0.05);
+
+                // Warmth Lowpass closes down gently during "Mmmm" for realistic closed-lip hum
+                const lpFreq = 2600.0 * (1.0 - m) + 920.0 * m;
+                warmthLowpass.frequency.setTargetAtTime(lpFreq, now, 0.05);
+            }
+        }
+
+        /* ============================================================================
+         * 3. VIEWPORT 1: CYMASCOPE 24-LED WATER DISH SHADER (THREE.JS / GLSL)
+         *    - Physical heightfield h(r, theta, t) combining Bessel/Faraday standing modes
+         *    - Normal calculation N = normalize(vec3(-dh/dx, -dh/dy, 1.0))
+         *    - Refracted & reflected ray lookup into the 24-LED Overhead Ring (r = 0.34)
+         *    - Transitions seamlessly between 24 crisp white LED dots at rest and
+         *      intricate glowing purple/white cymatic mandala petals during chant!
+         * ============================================================================ */
+        let dishScene, dishCamera, dishRenderer, dishUniforms;
+
+        function initCymaScopeDish() {
+            const container = document.getElementById('dishCanvasContainer');
+            dishScene = new THREE.Scene();
+            dishCamera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
+
+            dishRenderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: "high-performance" });
+            dishRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            dishRenderer.setSize(container.clientWidth, container.clientHeight);
+            container.appendChild(dishRenderer.domElement);
+
+            const vertexShader = `
+                varying vec2 vUv;
+                void main() {
+                    vUv = uv;
+                    gl_Position = vec4(position, 1.0);
+                }
+            `;
+
+            const fragmentShader = `
+                precision highp float;
+
+                uniform float uTime;
+                uniform vec2 uResolution;
+                uniform float uVocalEnv;      // 0.0 (rest / 24 LED dots) -> 1.0 (full chant)
+                uniform float uVowelMorph;    // 0.0 ("OOOO" petals) -> 1.0 ("MMMM" concentric ring)
+                uniform float uResidualSlosh; // Gentle low-freq wobble as water settles
+                uniform float uBassEnergy;
+                uniform float uMidEnergy;
+                uniform float uHighEnergy;
+                uniform float uDriveScale;
+                uniform float uSymmetryA;
+                uniform float uSymmetryB;
+                uniform float uRadialK;
+                uniform vec3 uDeepWaterCol;
+                uniform vec3 uWaterPrimaryCol;
+                uniform vec3 uWaterAccentCol;
+
+                varying vec2 vUv;
+
+                #define PI 3.14159265359
+                #define TWO_PI 6.28318530718
+
+                // Smooth 2D value noise for organic fluid micro-ripples
+                float hash21(vec2 p) {
+                    p = fract(p * vec2(123.34, 456.21));
+                    p += dot(p, p + 45.32);
+                    return fract(p.x * p.y);
+                }
+
+                float valueNoise(vec2 p) {
+                    vec2 i = floor(p);
+                    vec2 f = fract(p);
+                    vec2 u = f * f * (3.0 - 2.0 * f);
+                    return mix(
+                        mix(hash21(i + vec2(0.0, 0.0)), hash21(i + vec2(1.0, 0.0)), u.x),
+                        mix(hash21(i + vec2(0.0, 1.0)), hash21(i + vec2(1.0, 1.0)), u.x),
+                        u.y
+                    );
+                }
+
+                // Compute physical CymaScope 3D water heightfield h(p)
+                float getWaterHeight(vec2 p) {
+                    float r = length(p);
+                    if (r > 0.92) return 0.0;
+
+                    float theta = atan(p.y, p.x);
+                    float env = clamp(uVocalEnv * uDriveScale, 0.0, 1.6);
+                    float ooooWeight = 1.0 - uVowelMorph * 0.82; // Strong during "OOOO"
+                    float mmmmWeight = uVowelMorph;              // Strong during "MMMM"
+
+                    // Radial boundary damping near circular dish meniscus wall (r = 0.87)
+                    float wallConfine = smoothstep(0.89, 0.72, r);
+                    float besselDecay = 1.0 / sqrt(max(r, 0.06));
+
+                    // 1. Residual low-frequency fluid slosh (makes the 24-LED ring wobble as it settles, like 0:08 in video)
+                    float sloshAmt = uResidualSlosh * 0.018 + env * 0.006;
+                    float slosh = sloshAmt * sin(p.x * 5.5 + uTime * 4.2) * cos(p.y * 5.5 - uTime * 3.7) * smoothstep(0.0, 0.25, r);
+
+                    // If vocal chant is completely silent, only return the subtle settling slosh
+                    if (env < 0.002) {
+                        return slosh * wallConfine;
+                    }
+
+                    // 2. Fundamental Concentric Bessel J0 Standing Rings
+                    // Prominent during onset and during the "MMMM" nasal hum closure (like 0:07 & 0:21 in video)
+                    float k0 = mix(uRadialK, uRadialK * 0.78, mmmmWeight);
+                    float j0Wave = cos(r * k0 - uTime * 6.5) * cos(uTime * 11.0);
+                    float concentricRing = j0Wave * (0.35 + 0.55 * mmmmWeight + 0.25 * uBassEnergy);
+
+                    // Ribbed inner torus modulation around the LED ring radius (r ~ 0.34) for the "MMMM" phase
+                    float innerRingEnv = exp(-pow((r - 0.34) * 5.2, 2.0));
+                    float mmmmRibs = cos(theta * 24.0) * sin(r * 42.0 - uTime * 8.0) * innerRingEnv * (0.45 * mmmmWeight + 0.25);
+
+                    // 3. Azimuthal Faraday Standing Petals (Driven by active Healing Frequency's uSymmetryA & uSymmetryB)
+                    float petalRadialEnv = smoothstep(0.08, 0.28, r) * wallConfine;
+
+                    // Primary & Secondary azimuthal harmonic mandala modes
+                    float modeA = cos(theta * uSymmetryA + sin(uTime * 1.4) * 0.3) * sin(r * (uRadialK * 0.75) - uTime * 4.5) * cos(r * 11.0 + uTime * 3.2);
+                    float modeB = cos(theta * uSymmetryB) * cos(r * (uRadialK * 1.2) - uTime * 7.0) * (0.6 + 0.4 * uMidEnergy);
+
+                    // Cross-harmonic interference layer
+                    float modeCross = sin(theta * (uSymmetryA + 2.0) - uTime * 0.8) * cos(r * uRadialK + uTime * 5.5);
+                    float mode24 = cos(theta * 24.0) * sin(r * 54.0 - uTime * 9.0) * (0.35 + 0.4 * uHighEnergy);
+
+                    float faradayPetals = (modeA * 0.55 + modeB * 0.48 + modeCross * 0.38 + mode24 * 0.22) * ooooWeight * petalRadialEnv;
+
+                    // 4. Outer meniscus capillary waves reflecting off the circular dish boundary (r ~ 0.78..0.87)
+                    float rimZone = smoothstep(0.62, 0.83, r) * smoothstep(0.89, 0.83, r);
+                    float rimCapillary = cos(theta * (uSymmetryB * 1.5) + r * 35.0) * sin(uTime * 10.0) * rimZone * ooooWeight * 0.55;
+
+                    float totalWave = (concentricRing * 0.38 + mmmmRibs + faradayPetals * 0.85 + rimCapillary) * besselDecay * 0.022 * env;
+                    return (totalWave + slosh) * wallConfine;
+                }
+
+                void main() {
+                    // Normalized coordinates centered at (0,0) with dish radius ~ 0.88
+                    vec2 st = (gl_FragCoord.xy - 0.5 * uResolution.xy) / (min(uResolution.x, uResolution.y) * 0.5);
+                    float r = length(st);
+                    float theta = atan(st.y, st.x);
+
+                    // Pure black outside the circular CymaScope dish
+                    if (r > 0.935) {
+                        gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);
+                        return;
+                    }
+
+                    // Finite-difference gradient & Laplacian (curvature for caustic focusing)
+                    float eps = 0.0032;
+                    float hC = getWaterHeight(st);
+                    float hR = getWaterHeight(st + vec2(eps, 0.0));
+                    float hL = getWaterHeight(st - vec2(eps, 0.0));
+                    float hU = getWaterHeight(st + vec2(0.0, eps));
+                    float hD = getWaterHeight(st - vec2(0.0, eps));
+
+                    vec2 grad = vec2(hR - hL, hU - hD) / (2.0 * eps);
+                    float laplacian = (hR + hL + hU + hD - 4.0 * hC) / (eps * eps);
+
+                    // 3D Perturbed Water Surface Normal
+                    vec3 normal = normalize(vec3(-grad.x * 1.35, -grad.y * 1.35, 1.0));
+                    float slopeMag = length(grad);
+
+                    // --- 1. THE 24-LED CYMASCOPE OVERHEAD ILLUMINATION RING ---
+                    // When the water is flat (hC -> 0, grad -> 0), normal.xy == 0, so refPos == st.
+                    // The 24 LEDs at radius 0.335 reflect as 24 crisp, discrete glowing white dots!
+                    // When waves erupt, normal.xy refracts refPos across the LED ring and violet chamber.
+                    vec2 refPos = st + normal.xy * 0.42;
+                    float refR = length(refPos);
+                    float refTheta = atan(refPos.y, refPos.x);
+
+                    // Nearest LED calculation for 24 discrete point lights arranged at radius = 0.335
+                    float numLeds = 24.0;
+                    float ledRadius = 0.335;
+                    float sectorAngle = TWO_PI / numLeds;
+                    float nearestIdx = floor((refTheta + PI) / sectorAngle + 0.5);
+                    float ledAngle = nearestIdx * sectorAngle - PI;
+                    vec2 ledCenter = vec2(cos(ledAngle), sin(ledAngle)) * ledRadius;
+
+                    float distToLed = length(refPos - ledCenter);
+
+                    // Crisp white LED core + soft violet-white bloom halo
+                    float ledCoreSize = mix(0.017, 0.024, clamp(uVocalEnv, 0.0, 1.0));
+                    float ledDotCore = smoothstep(ledCoreSize, ledCoreSize * 0.32, distToLed);
+                    float ledDotHalo = exp(-distToLed * 38.0) * 0.65;
+
+                    // Secondary inner/outer harmonic reflection of the LED ring during active cymatics
+                    float ringDist = abs(refR - ledRadius);
+                    float continuousRingGlow = exp(-ringDist * 16.0) * smoothstep(0.02, 0.35, slopeMag);
+
+                    // --- 2. DYNAMIC HEALING FREQUENCY FLUID LIGHTING & CAUSTICS ---
+                    vec3 deepWaterCol  = uDeepWaterCol;
+                    vec3 violetChamber = uWaterPrimaryCol;
+                    vec3 lavenderGlow  = uWaterAccentCol;
+                    vec3 pureWhite     = vec3(1.0, 0.98, 1.0);        // Specular LED white
+
+                    // Directional specular + Fresnel water sheen
+                    vec3 viewDir = vec3(0.0, 0.0, 1.0);
+                    vec3 lightDir1 = normalize(vec3(0.25, 0.35, 1.0));
+                    vec3 lightDir2 = normalize(vec3(-0.35, -0.25, 0.9));
+                    float spec1 = pow(max(dot(reflect(-lightDir1, normal), viewDir), 0.0), 28.0);
+                    float spec2 = pow(max(dot(reflect(-lightDir2, normal), viewDir), 0.0), 16.0);
+
+                    // Caustic ridge focusing from water curvature & slope
+                    float caustic = smoothstep(0.01, 0.45, slopeMag) + clamp(abs(laplacian) * 0.0018, 0.0, 0.85);
+                    caustic *= smoothstep(0.89, 0.05, r);
+
+                    // Base water color inside the dish
+                    float radialAmbient = exp(-pow((r - 0.34) * 2.4, 2.0)) * (0.28 + 0.55 * clamp(uVocalEnv, 0.0, 1.0));
+                    vec3 color = deepWaterCol * (0.45 + 0.55 * smoothstep(0.90, 0.20, r));
+                    color += violetChamber * radialAmbient * 0.65;
+
+                    // Layer in the violet & lavender cymatic wave filaments
+                    color = mix(color, violetChamber, clamp(caustic * 0.85, 0.0, 1.0));
+                    color += lavenderGlow * pow(clamp(caustic, 0.0, 1.2), 1.6) * 0.75;
+                    color += lavenderGlow * continuousRingGlow * 0.55;
+                    color += pureWhite * (spec1 * 0.75 + spec2 * 0.35) * smoothstep(0.02, 0.25, slopeMag);
+
+                    // Add the 24 discrete white LED reflections (sharp dots at rest, warped caustic filaments in motion)
+                    color += violetChamber * ledDotHalo * 0.9;
+                    color = mix(color, pureWhite, clamp(ledDotCore, 0.0, 1.0));
+
+                    // Subtle central umbilical standing node reflection during high "OOOO" chant
+                    float centerSpokes = abs(cos(theta * 18.0)) * exp(-pow((r - 0.14) * 14.0, 2.0)) * clamp(uVocalEnv, 0.0, 1.0) * (1.0 - uVowelMorph * 0.7);
+                    color += lavenderGlow * centerSpokes * 0.55;
+
+                    // --- 3. REALISTIC CIRCULAR CYMASCOPE DISH MENISCUS RIM (r ~ 0.86..0.92) ---
+                    float rimWall = smoothstep(0.83, 0.875, r) * smoothstep(0.925, 0.885, r);
+                    // Subtle peripheral micro-reflections & meniscus droplets around the outer rim (just like reference video)
+                    float rimBeads = pow(0.5 + 0.5 * cos(theta * 24.0 + 0.3), 8.0) * smoothstep(0.84, 0.88, r) * smoothstep(0.91, 0.88, r);
+                    float rimNoise = valueNoise(st * 32.0);
+                    color += violetChamber * rimWall * (0.75 + 0.35 * rimNoise);
+                    color += lavenderGlow * rimBeads * 0.85;
+                    color += pureWhite * rimWall * pow(max(0.0, dot(normal.xy, normalize(st))), 2.0) * 0.6;
+
+                    // Clean outer circular mask transition to pitch black
+                    float dishMask = smoothstep(0.93, 0.895, r);
+                    color *= dishMask;
+
+                    gl_FragColor = vec4(color, 1.0);
+                }
+            `;
+
+            dishUniforms = {
+                uTime: { value: 0.0 },
+                uResolution: { value: new THREE.Vector2(container.clientWidth, container.clientHeight) },
+                uVocalEnv: { value: 0.0 },
+                uVowelMorph: { value: 0.0 },
+                uResidualSlosh: { value: 0.0 },
+                uBassEnergy: { value: 0.0 },
+                uMidEnergy: { value: 0.0 },
+                uHighEnergy: { value: 0.0 },
+                uDriveScale: { value: 1.0 },
+                uSymmetryA: { value: 6.0 },
+                uSymmetryB: { value: 12.0 },
+                uRadialK: { value: 28.0 },
+                uDeepWaterCol: { value: new THREE.Vector3(0.035, 0.015, 0.09) },
+                uWaterPrimaryCol: { value: new THREE.Vector3(0.46, 0.25, 0.92) },
+                uWaterAccentCol: { value: new THREE.Vector3(0.76, 0.65, 1.00) }
+            };
+
+            const mat = new THREE.ShaderMaterial({
+                vertexShader,
+                fragmentShader,
+                uniforms: dishUniforms
+            });
+
+            const quad = new THREE.Mesh(new THREE.PlaneGeometry(2, 2), mat);
+            dishScene.add(quad);
+        }
+
+        /* ============================================================================
+         * 4. VIEWPORT 2: 3D HOLOGRAPHIC BRAIN NEURAL RESONANCE (THREE.JS)
+         *    - Recreates the bottom half of the reference video:
+         *      Translucent Emerald/Teal Left & Right Cerebral Hemispheres + Brainstem
+         *      with 28,000 glowing Violet/Magenta synaptic particles pulsing upward
+         *      from the brainstem into the neocortex in real-time sync with the chant!
+         * ============================================================================ */
+        let brainScene, brainCamera, brainRenderer, brainGroup, neuralUniforms, cortexMaterials = [];
+        let isDraggingBrain = false;
+        let prevMouse = { x: 0, y: 0 };
+        let brainRotVelocity = { x: 0, y: 0 };
+        let brainTargetRot = { x: 0.08, y: 0.0 };
+
+        // Helper: 3D anatomical coordinate warper to shape a sphere into a realistic Cerebral Hemisphere
+        function deformHemisphereVertex(v, sideSign) {
+            // v is initially on a unit sphere
+            let x = v.x * 0.72;
+            let y = v.y * 0.88;
+            let z = v.z * 1.18;
+
+            // Flatten the medial longitudinal fissure wall (inner side facing x = 0)
+            if (x * sideSign < 0.0) {
+                x *= 0.22;
+            } else {
+                // Bulge out temporal & parietal lobes laterally
+                const temporalBulge = Math.exp(-Math.pow((y + 0.18) * 2.5, 2.0)) * Math.exp(-Math.pow((z - 0.05) * 1.5, 2.0));
+                x += sideSign * temporalBulge * 0.26;
+            }
+
+            // Flatten inferior base slightly and carve Sylvian fissure indentation
+            if (y < -0.3) {
+                y *= 0.72;
+            }
+
+            // Organic cortical gyri / sulci folds using trigonometric spatial modulation
+            const sulci = 0.038 * (
+                Math.sin(x * 14.0 + z * 8.0) * Math.cos(y * 12.0) +
+                0.5 * Math.cos(z * 18.0 - y * 10.0)
+            );
+
+            x += sideSign * 0.44 + (v.x >= 0 ? sulci : -sulci);
+            y += 0.22 + sulci;
+            z += sulci;
+
+            return new THREE.Vector3(x, y, z);
+        }
+
+        function init3DBrain() {
+            const container = document.getElementById('brainCanvasContainer');
+            brainScene = new THREE.Scene();
+
+            brainCamera = new THREE.PerspectiveCamera(40, container.clientWidth / Math.max(1, container.clientHeight), 0.1, 100);
+            brainCamera.position.set(0, 0.05, 3.65);
+
+            brainRenderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: "high-performance" });
+            brainRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            brainRenderer.setSize(container.clientWidth, container.clientHeight);
+            container.appendChild(brainRenderer.domElement);
+
+            brainGroup = new THREE.Group();
+            brainScene.add(brainGroup);
+
+            // Custom Translucent Cortical Shell Shader (Emerald / Teal Bioluminescence like reference video)
+            const cortexVertexShader = `
+                varying vec3 vNormal;
+                varying vec3 vViewPos;
+                varying vec3 vWorldPos;
+                void main() {
+                    vNormal = normalize(normalMatrix * normal);
+                    vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
+                    vViewPos = -mvPosition.xyz;
+                    vWorldPos = position;
+                    gl_Position = projectionMatrix * mvPosition;
+                }
+            `;
+
+            const cortexFragmentShader = `
+                uniform float uTime;
+                uniform float uVocalEnv;
+                uniform vec3 uBaseColor;
+                uniform vec3 uGlowColor;
+                varying vec3 vNormal;
+                varying vec3 vViewPos;
+                varying vec3 vWorldPos;
+
+                void main() {
+                    vec3 N = normalize(vNormal);
+                    vec3 V = normalize(vViewPos);
+                    float fresnel = pow(1.0 - abs(dot(N, V)), 2.2);
+
+                    // Subtle cortical sulci wave modulation
+                    float gyriPattern = 0.5 + 0.5 * sin(vWorldPos.x * 16.0 + vWorldPos.z * 14.0 + sin(vWorldPos.y * 12.0));
+                    float pulse = 0.75 + 0.35 * uVocalEnv * sin(uTime * 4.0 - vWorldPos.y * 3.0);
+
+                    vec3 cortexCol = uBaseColor * (0.55 + 0.45 * gyriPattern) * pulse;
+                    // Frequency-matched neural sub-glow bleeding into the medial/inferior cortex during chant
+                    float coreProx = exp(-length(vWorldPos - vec3(0.0, -0.1, 0.0)) * 1.4);
+                    vec3 neuralGlow = uGlowColor * coreProx * (0.3 + 0.7 * uVocalEnv);
+
+                    vec3 finalCol = cortexCol + neuralGlow * 0.55;
+                    float alpha = clamp(0.14 + fresnel * 0.42 + gyriPattern * 0.08, 0.08, 0.62);
+
+                    gl_FragColor = vec4(finalCol, alpha);
+                }
+            `;
+
+            function createHemisphereMesh(sideSign) {
+                const geo = new THREE.SphereGeometry(1.0, 56, 42);
+                const pos = geo.attributes.position;
+                const tempV = new THREE.Vector3();
+                for (let i = 0; i < pos.count; i++) {
+                    tempV.fromBufferAttribute(pos, i);
+                    const deformed = deformHemisphereVertex(tempV, sideSign);
+                    pos.setXYZ(i, deformed.x, deformed.y, deformed.z);
+                }
+                geo.computeVertexNormals();
+
+                const mat = new THREE.ShaderMaterial({
+                    vertexShader: cortexVertexShader,
+                    fragmentShader: cortexFragmentShader,
+                    uniforms: {
+                        uTime: { value: 0 },
+                        uVocalEnv: { value: 0 },
+                        uBaseColor: { value: new THREE.Color(0x34d399) },
+                        uGlowColor: { value: new THREE.Color(0xc084fc) }
+                    },
+                    transparent: true,
+                    depthWrite: false,
+                    side: THREE.DoubleSide,
+                    blending: THREE.AdditiveBlending
+                });
+                cortexMaterials.push(mat);
+                return new THREE.Mesh(geo, mat);
+            }
+
+            // Add Left & Right Cerebral Hemispheres
+            brainGroup.add(createHemisphereMesh(-1.0));
+            brainGroup.add(createHemisphereMesh(1.0));
+
+            // Add Translucent Brainstem & Pons Core (Lower Center, matching the reference video)
+            const stemGeo = new THREE.CylinderGeometry(0.26, 0.17, 1.05, 32, 24);
+            const sPos = stemGeo.attributes.position;
+            for (let i = 0; i < sPos.count; i++) {
+                let x = sPos.getX(i);
+                let y = sPos.getY(i);
+                let z = sPos.getZ(i);
+                const pons = Math.exp(-Math.pow((y - 0.15) * 3.5, 2.0)) * 0.08;
+                z += pons;
+                sPos.setXYZ(i, x, y - 0.62, z - 0.05);
+            }
+            stemGeo.computeVertexNormals();
+
+            const stemMat = new THREE.ShaderMaterial({
+                vertexShader: cortexVertexShader,
+                fragmentShader: cortexFragmentShader,
+                uniforms: {
+                    uTime: { value: 0 },
+                    uVocalEnv: { value: 0 },
+                    uBaseColor: { value: new THREE.Color(0x6ee7b7) },
+                    uGlowColor: { value: new THREE.Color(0xc084fc) }
+                },
+                transparent: true,
+                depthWrite: false,
+                blending: THREE.AdditiveBlending
+            });
+            cortexMaterials.push(stemMat);
+            brainGroup.add(new THREE.Mesh(stemGeo, stemMat));
+
+            // --- 28,000 3D SYNAPTIC NEURAL RESONANCE PARTICLES ---
+            // Distributed inside the brainstem, thalamus, and left/right hemispheres
+            const particleCount = 28000;
+            const pPositions = new Float32Array(particleCount * 3);
+            const pPhases = new Float32Array(particleCount);
+            const pRegions = new Float32Array(particleCount); // 0 = Brainstem/Thalamus, 1 = Cortex
+
+            const dummy = new THREE.Vector3();
+            for (let i = 0; i < particleCount; i++) {
+                const i3 = i * 3;
+                if (i < particleCount * 0.25) {
+                    // Dense Brainstem & Thalamocortical ascending pathway
+                    const t = Math.random(); // 0 (bottom of stem) -> 1 (thalamus center)
+                    const angle = Math.random() * Math.PI * 2;
+                    const rad = Math.pow(Math.random(), 0.6) * (0.16 + 0.18 * t);
+                    pPositions[i3]     = Math.cos(angle) * rad + (Math.random() - 0.5) * 0.08;
+                    pPositions[i3 + 1] = -1.12 + t * 1.35;
+                    pPositions[i3 + 2] = Math.sin(angle) * rad - 0.05;
+                    pRegions[i] = 0.0;
+                } else {
+                    // Left & Right Hemisphere Neural Networks
+                    const side = Math.random() < 0.5 ? -1.0 : 1.0;
+                    // Sample inside unit sphere with higher density along internal white-matter tracts
+                    const u = Math.random();
+                    const v = Math.random();
+                    const theta = u * 2.0 * Math.PI;
+                    const phi = Math.acos(2.0 * v - 1.0);
+                    const r = Math.pow(Math.random(), 0.42) * 0.94;
+                    dummy.set(
+                        r * Math.sin(phi) * Math.cos(theta),
+                        r * Math.sin(phi) * Math.sin(theta),
+                        r * Math.cos(phi)
+                    );
+                    const p = deformHemisphereVertex(dummy, side);
+                    pPositions[i3]     = p.x;
+                    pPositions[i3 + 1] = p.y;
+                    pPositions[i3 + 2] = p.z;
+                    pRegions[i] = 1.0;
+                }
+                pPhases[i] = Math.random() * Math.PI * 2;
+            }
+
+            const particleGeo = new THREE.BufferGeometry();
+            particleGeo.setAttribute('position', new THREE.BufferAttribute(pPositions, 3));
+            particleGeo.setAttribute('aPhase', new THREE.BufferAttribute(pPhases, 1));
+            particleGeo.setAttribute('aRegion', new THREE.BufferAttribute(pRegions, 1));
+
+            neuralUniforms = {
+                uTime: { value: 0.0 },
+                uVocalEnv: { value: 0.0 },
+                uVowelMorph: { value: 0.0 },
+                uHighEnergy: { value: 0.0 },
+                uSynapseDeep: { value: new THREE.Vector3(0.58, 0.22, 0.94) },
+                uSynapseBright: { value: new THREE.Vector3(0.94, 0.50, 1.00) }
+            };
+
+            const particleVertexShader = `
+                attribute float aPhase;
+                attribute float aRegion;
+                uniform float uTime;
+                uniform float uVocalEnv;
+                uniform float uVowelMorph;
+                uniform float uHighEnergy;
+
+                varying float vIntensity;
+                varying float vRegion;
+
+                void main() {
+                    vRegion = aRegion;
+                    vec3 pos = position;
+
+                    // Ascending neural action-potential wave traveling from brainstem (y = -1.1) up into cortex (y = +0.9)
+                    float waveSpeed = 3.8;
+                    float distFromThalamus = length(pos - vec3(0.0, -0.05, 0.0));
+                    float ascendingWave = sin(pos.y * 5.5 - uTime * waveSpeed + aPhase * 0.35);
+                    float radialWave = cos(distFromThalamus * 7.0 - uTime * 4.5 + aPhase * 0.2);
+
+                    float firing = smoothstep(0.15, 0.95, 0.5 * ascendingWave + 0.5 * radialWave);
+                    float envBoost = 0.22 + 0.88 * uVocalEnv;
+                    vIntensity = firing * envBoost;
+
+                    // Subtle organic neural micro-oscillation during active chant
+                    pos.x += sin(uTime * 2.5 + aPhase) * 0.008 * uVocalEnv;
+                    pos.y += cos(uTime * 2.2 + aPhase) * 0.008 * uVocalEnv;
+
+                    vec4 mvPosition = modelViewMatrix * vec4(pos, 1.0);
+                    gl_Position = projectionMatrix * mvPosition;
+
+                    float baseSize = aRegion < 0.5 ? 3.8 : 3.1;
+                    gl_PointSize = (baseSize + vIntensity * 4.2) * (2.5 / -mvPosition.z);
+                }
+            `;
+
+            const particleFragmentShader = `
+                uniform vec3 uSynapseDeep;
+                uniform vec3 uSynapseBright;
+                varying float vIntensity;
+                varying float vRegion;
+
+                void main() {
+                    vec2 uv = gl_PointCoord.xy - 0.5;
+                    float d = length(uv);
+                    if (d > 0.5) discard;
+
+                    float glow = exp(-d * 6.5) * smoothstep(0.5, 0.12, d);
+
+                    vec3 hotCore = vec3(1.0, 0.96, 1.0);
+                    vec3 col = mix(uSynapseDeep, uSynapseBright, vIntensity);
+                    col = mix(col, hotCore, smoothstep(0.65, 1.0, vIntensity) * 0.65);
+
+                    float alpha = glow * (0.28 + 0.72 * vIntensity);
+                    gl_FragColor = vec4(col, alpha);
+                }
+            `;
+
+            const particleMat = new THREE.ShaderMaterial({
+                vertexShader: particleVertexShader,
+                fragmentShader: particleFragmentShader,
+                uniforms: neuralUniforms,
+                transparent: true,
+                depthWrite: false,
+                blending: THREE.AdditiveBlending
+            });
+
+            const neuralPoints = new THREE.Points(particleGeo, particleMat);
+            brainGroup.add(neuralPoints);
+
+            // Interactive Mouse & Touch Drag Rotation for 3D Brain
+            container.addEventListener('pointerdown', (e) => {
+                isDraggingBrain = true;
+                prevMouse.x = e.clientX;
+                prevMouse.y = e.clientY;
+            });
+            window.addEventListener('pointerup', () => {
+                isDraggingBrain = false;
+            });
+            window.addEventListener('pointermove', (e) => {
+                if (!isDraggingBrain) return;
+                const dx = e.clientX - prevMouse.x;
+                const dy = e.clientY - prevMouse.y;
+                prevMouse.x = e.clientX;
+                prevMouse.y = e.clientY;
+                brainTargetRot.y += dx * 0.007;
+                brainTargetRot.x = Math.max(-0.6, Math.min(0.6, brainTargetRot.x + dy * 0.006));
+            });
+        }
+
+        /* ============================================================================
+         * 5. REAL-TIME SPECTRUM HUD & 60 FPS MASTER RENDER LOOP
+         * ============================================================================ */
+        const specCanvas = document.getElementById('spectrumCanvas');
+        const specCtx = specCanvas ? specCanvas.getContext('2d') : null;
+        const clock = new THREE.Clock();
+
+        function drawMiniSpectrum(bass, mid, high) {
+            if (!specCtx) return;
+            const w = specCanvas.width;
+            const h = specCanvas.height;
+            specCtx.clearRect(0, 0, w, h);
+
+            const preset = HEALING_FREQUENCIES[activeFreqIndex];
+            const bars = 24;
+            const barW = (w - (bars - 1) * 1.5) / bars;
+            for (let i = 0; i < bars; i++) {
+                let val = 0.08;
+                if (audioInitialized && isAudioPlaying && freqData) {
+                    const bin = Math.min(freqData.length - 1, Math.floor(i * 2.2) + 1);
+                    val = Math.max(0.08, (freqData[bin] / 255.0) * currentVocalEnv);
+                }
+                const bh = Math.max(2, val * (h - 4));
+                const grad = specCtx.createLinearGradient(0, h, 0, h - bh);
+                grad.addColorStop(0, preset.hex);
+                grad.addColorStop(1, '#ffffff');
+                specCtx.fillStyle = grad;
+                specCtx.fillRect(i * (barW + 1.5), h - bh - 2, barW, bh);
+            }
+        }
+
+        function onWindowResize() {
+            const dishCont = document.getElementById('dishCanvasContainer');
+            if (dishRenderer && dishCont && dishCont.clientWidth > 0 && dishCont.clientHeight > 0) {
+                dishRenderer.setSize(dishCont.clientWidth, dishCont.clientHeight);
+                dishUniforms.uResolution.value.set(dishCont.clientWidth, dishCont.clientHeight);
+            }
+
+            const brainCont = document.getElementById('brainCanvasContainer');
+            if (brainRenderer && brainCont && brainCont.clientWidth > 0 && brainCont.clientHeight > 0) {
+                brainCamera.aspect = brainCont.clientWidth / brainCont.clientHeight;
+                brainCamera.updateProjectionMatrix();
+                brainRenderer.setSize(brainCont.clientWidth, brainCont.clientHeight);
+            }
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+
+            const elapsed = clock.getElapsedTime();
+            const nowSec = performance.now() * 0.001;
+
+            // 1. Update Breath State Machine & Vocal Tract Formants
+            updateBreathAndFormants(nowSec);
+
+            // 2. Extract Real-Time FFT Frequency Band Energies (132Hz Bass, 455-810Hz Formants, 528/741Hz Harmonics)
+            let bassEnergy = 0.0;
+            let midEnergy = 0.0;
+            let highEnergy = 0.0;
+
+            if (audioInitialized && analyser && isAudioPlaying) {
+                analyser.getByteFrequencyData(freqData);
+                // 66Hz - 200Hz Fundamental Band
+                let bSum = 0;
+                for (let i = 1; i <= 6; i++) bSum += freqData[i];
+                bassEnergy = (bSum / (6 * 255.0)) * currentVocalEnv;
+
+                // 250Hz - 950Hz Vocal Formant Band
+                let mSum = 0;
+                for (let i = 7; i <= 24; i++) mSum += freqData[i];
+                midEnergy = (mSum / (18 * 255.0)) * currentVocalEnv;
+
+                // 528Hz & 741Hz Overtone Band
+                let hSum = 0;
+                for (let i = 12; i <= 36; i++) hSum += freqData[i];
+                highEnergy = (hSum / (25 * 255.0)) * currentVocalEnv;
+            }
+
+            drawMiniSpectrum(bassEnergy, midEnergy, highEnergy);
+
+            // Smoothly interpolate color palette & cymatic nodal symmetry toward active Healing Frequency
+            const targetPreset = HEALING_FREQUENCIES[activeFreqIndex];
+            const lerpRate = 0.06;
+            currentTheme.symA += (targetPreset.symA - currentTheme.symA) * lerpRate;
+            currentTheme.symB += (targetPreset.symB - currentTheme.symB) * lerpRate;
+            currentTheme.radialK += (targetPreset.radialK - currentTheme.radialK) * lerpRate;
+
+            currentTheme.deepWater.lerp(new THREE.Vector3(...targetPreset.deepWater), lerpRate);
+            currentTheme.waterPrimary.lerp(new THREE.Vector3(...targetPreset.waterPrimary), lerpRate);
+            currentTheme.waterAccent.lerp(new THREE.Vector3(...targetPreset.waterAccent), lerpRate);
+            currentTheme.cortexColor.lerp(new THREE.Vector3(...targetPreset.cortexColor), lerpRate);
+            currentTheme.synapseDeep.lerp(new THREE.Vector3(...targetPreset.synapseDeep), lerpRate);
+            currentTheme.synapseBright.lerp(new THREE.Vector3(...targetPreset.synapseBright), lerpRate);
+
+            // 3. Update & Render Viewport 1: CymaScope 24-LED Water Dish
+            if (dishUniforms) {
+                dishUniforms.uTime.value = elapsed;
+                dishUniforms.uVocalEnv.value = currentVocalEnv;
+                dishUniforms.uVowelMorph.value = currentVowelMorph;
+                dishUniforms.uResidualSlosh.value = currentResidualSlosh;
+                dishUniforms.uBassEnergy.value = bassEnergy;
+                dishUniforms.uMidEnergy.value = midEnergy;
+                dishUniforms.uHighEnergy.value = highEnergy;
+                dishUniforms.uDriveScale.value = waterDriveScale;
+                dishUniforms.uSymmetryA.value = currentTheme.symA;
+                dishUniforms.uSymmetryB.value = currentTheme.symB;
+                dishUniforms.uRadialK.value = currentTheme.radialK;
+                dishUniforms.uDeepWaterCol.value.copy(currentTheme.deepWater);
+                dishUniforms.uWaterPrimaryCol.value.copy(currentTheme.waterPrimary);
+                dishUniforms.uWaterAccentCol.value.copy(currentTheme.waterAccent);
+                dishRenderer.render(dishScene, dishCamera);
+            }
+
+            // 4. Update & Render Viewport 2: 3D Brain Neural Resonance
+            if (brainGroup && neuralUniforms) {
+                neuralUniforms.uTime.value = elapsed;
+                neuralUniforms.uVocalEnv.value = currentVocalEnv;
+                neuralUniforms.uVowelMorph.value = currentVowelMorph;
+                neuralUniforms.uHighEnergy.value = highEnergy;
+                neuralUniforms.uSynapseDeep.value.copy(currentTheme.synapseDeep);
+                neuralUniforms.uSynapseBright.value.copy(currentTheme.synapseBright);
+
+                cortexMaterials.forEach(mat => {
+                    mat.uniforms.uTime.value = elapsed;
+                    mat.uniforms.uVocalEnv.value = currentVocalEnv;
+                    mat.uniforms.uBaseColor.value.setRGB(
+                        currentTheme.cortexColor.x,
+                        currentTheme.cortexColor.y,
+                        currentTheme.cortexColor.z
+                    );
+                    mat.uniforms.uGlowColor.value.setRGB(
+                        currentTheme.synapseBright.x,
+                        currentTheme.synapseBright.y,
+                        currentTheme.synapseBright.z
+                    );
+                });
+
+                // Subtle anatomical breathing & gentle orbital sway (matching reference video coronal view)
+                if (!isDraggingBrain) {
+                    const sway = Math.sin(elapsed * 0.45) * 0.16;
+                    brainGroup.rotation.y += ((brainTargetRot.y + sway) - brainGroup.rotation.y) * 0.05;
+                    brainGroup.rotation.x += (brainTargetRot.x - brainGroup.rotation.x) * 0.05;
+                } else {
+                    brainGroup.rotation.y += (brainTargetRot.y - brainGroup.rotation.y) * 0.15;
+                    brainGroup.rotation.x += (brainTargetRot.x - brainGroup.rotation.x) * 0.15;
+                }
+
+                brainRenderer.render(brainScene, brainCamera);
+            }
+        }
+
+        window.addEventListener('resize', onWindowResize);
+
+        window.onload = function () {
+            buildFrequencySelectorUI();
+            initCymaScopeDish();
+            init3DBrain();
+            selectHealingFrequency(0, false);
+            onWindowResize();
+            animate();
+        };
+    </script>
+</body>
+</html>
