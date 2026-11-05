@@ -561,7 +561,7 @@
                 id: '741hz_pure',
                 shortLabel: '741 Hz Pure',
                 name: '741 Hz Detox & Intuitive Awakening (Sol)',
-                tag: '185.25Hz Root • 741Hz • 370.5Hz',
+                tag: '123.5Hz Root • 741Hz • 370.5Hz',
                 subtitle: 'Glymphatic Cleansing & Mental Clarity • Electric Cyan-Sapphire',
                 description: 'Fifth Solfeggio tone (Sol). Associated with cellular toxin clearance, electromagnetic hygiene, and sharp problem-solving intuition.',
                 neuralTarget: 'Glymphatic Clearance & Parietal-Frontal Clarity • 741Hz',
@@ -586,7 +586,7 @@
                 name: '852 Hz Pineal Insight & Spiritual Order (La)',
                 tag: '106.5Hz Root • 852Hz • 426Hz',
                 subtitle: 'Higher Intuition & Inner Stillness • Deep Astral Indigo',
-                description: 'Sixth Solfeggio tone (La).Quiets overactive default-mode network chatter and awakens deep contemplative insight.',
+                description: 'Sixth Solfeggio tone (La). Quiets overactive default-mode network chatter and awakens deep contemplative insight.',
                 neuralTarget: 'Default Mode Network Quieting & Pineal Resonance • 852Hz',
                 rootFreq: 106.5,      // 852 / 8
                 primaryFreq: 852.0,
@@ -852,6 +852,7 @@
                 holdBtn.className = "px-2.5 py-1.5 text-[11px] font-medium rounded-lg text-purple-300 hover:text-white transition";
                 vowelLabel.innerText = "Auto (O→M)";
                 breathStartTime = performance.now() * 0.001;
+                lastCycleIndex = 0;
                 showToast("Auto Breath Cycle (12.5s Oooo → Mmmm → 24-LED Settle)");
             } else {
                 holdBtn.className = "px-2.5 py-1.5 text-[11px] font-medium rounded-lg bg-purple-600 text-white transition";
@@ -873,6 +874,7 @@
 
         function triggerFreshBreath() {
             breathStartTime = performance.now() * 0.001;
+            lastCycleIndex = 0;
             if (!isAudioPlaying) {
                 startExperience();
             } else {
@@ -1251,6 +1253,9 @@
                 toggleBinaural(true);
             }
             updateBinauralBeat(hz);
+            if (!isAudioPlaying) {
+                startExperience();
+            }
         }
 
         function updateBinauralBeat(val) {
@@ -1336,6 +1341,7 @@
                 btnIcon.innerHTML = '<path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>';
                 statusDot.className = "absolute -top-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-emerald-400 ring-2 ring-black animate-ping";
                 breathStartTime = performance.now() * 0.001;
+                lastCycleIndex = 0;
                 masterGain.gain.setTargetAtTime(0.85, audioCtx.currentTime, 0.25);
                 updateBinauralGain();
                 showToast("OM (AUM) Formant Choir & Cymatics Active");
@@ -1729,8 +1735,8 @@
             };
 
             const mat = new THREE.ShaderMaterial({
-                vertexShader,
-                fragmentShader,
+                vertexShader: vertexShader.replace(/\u00A0/g, ' '),
+                fragmentShader: fragmentShader.replace(/\u00A0/g, ' '),
                 uniforms: dishUniforms
             });
 
@@ -1793,7 +1799,7 @@
             brainCamera.position.set(0, 0.05, 3.65);
 
             brainRenderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: "high-performance" });
-            brainRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            brainRenderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
             brainRenderer.setSize(container.clientWidth, container.clientHeight);
             container.appendChild(brainRenderer.domElement);
 
@@ -1856,8 +1862,8 @@
                 geo.computeVertexNormals();
 
                 const mat = new THREE.ShaderMaterial({
-                    vertexShader: cortexVertexShader,
-                    fragmentShader: cortexFragmentShader,
+                    vertexShader: cortexVertexShader.replace(/\u00A0/g, ' '),
+                    fragmentShader: cortexFragmentShader.replace(/\u00A0/g, ' '),
                     uniforms: {
                         uTime: { value: 0 },
                         uVocalEnv: { value: 0 },
@@ -1891,8 +1897,8 @@
             stemGeo.computeVertexNormals();
 
             const stemMat = new THREE.ShaderMaterial({
-                vertexShader: cortexVertexShader,
-                fragmentShader: cortexFragmentShader,
+                vertexShader: cortexVertexShader.replace(/\u00A0/g, ' '),
+                fragmentShader: cortexFragmentShader.replace(/\u00A0/g, ' '),
                 uniforms: {
                     uTime: { value: 0 },
                     uVocalEnv: { value: 0 },
@@ -1906,9 +1912,9 @@
             cortexMaterials.push(stemMat);
             brainGroup.add(new THREE.Mesh(stemGeo, stemMat));
 
-            // --- 28,000 3D SYNAPTIC NEURAL RESONANCE PARTICLES ---
-            // Distributed inside the brainstem, thalamus, and left/right hemispheres
-            const particleCount = 28000;
+            // --- 3D SYNAPTIC NEURAL RESONANCE PARTICLES (Adaptive count for mobile GPUs) ---
+            const isMobileDevice = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) || window.innerWidth < 768;
+            const particleCount = isMobileDevice ? 12000 : 28000;
             const pPositions = new Float32Array(particleCount * 3);
             const pPhases = new Float32Array(particleCount);
             const pRegions = new Float32Array(particleCount); // 0 = Brainstem/Thalamus, 1 = Cortex
@@ -2007,7 +2013,7 @@
                     gl_Position = projectionMatrix * mvPosition;
 
                     float baseSize = aRegion < 0.5 ? 3.8 : 3.1;
-                    gl_PointSize = (baseSize + vIntensity * 4.2) * (2.5 / -mvPosition.z);
+                    gl_PointSize = clamp((baseSize + vIntensity * 4.2) * (2.5 / max(-mvPosition.z, 0.1)), 1.0, 64.0);
                 }
             `;
 
@@ -2034,8 +2040,8 @@
             `;
 
             const particleMat = new THREE.ShaderMaterial({
-                vertexShader: particleVertexShader,
-                fragmentShader: particleFragmentShader,
+                vertexShader: particleVertexShader.replace(/\u00A0/g, ' '),
+                fragmentShader: particleFragmentShader.replace(/\u00A0/g, ' '),
                 uniforms: neuralUniforms,
                 transparent: true,
                 depthWrite: false,
@@ -2230,6 +2236,15 @@
             init3DBrain();
             selectHealingFrequency(0, false);
             onWindowResize();
+
+            if (typeof ResizeObserver !== 'undefined') {
+                const ro = new ResizeObserver(() => onWindowResize());
+                const dishCont = document.getElementById('dishCanvasContainer');
+                const brainCont = document.getElementById('brainCanvasContainer');
+                if (dishCont) ro.observe(dishCont);
+                if (brainCont) ro.observe(brainCont);
+            }
+
             animate();
         };
     </script>
