@@ -2,7 +2,11 @@
 <html lang="en" class="dark">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#020106">
     <title>CymaScope 528Hz & 741Hz AUM Water Cymatics & Neural Resonance</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -76,21 +80,34 @@
             -ms-overflow-style: none;
             scrollbar-width: none;
         }
+        /* Mobile & iOS Safari Dynamic Viewport Optimizations */
+        html, body {
+            height: 100dvh;
+            width: 100vw;
+            overscroll-behavior: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+        @media (max-width: 768px) {
+            body { touch-action: manipulation; }
+            .glass-hud, .glass-pill { backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
+            footer { padding-bottom: max(env(safe-area-inset-bottom, 0.4rem), 0.4rem); }
+        }
         canvas {
             display: block;
             outline: none;
+            touch-action: none;
         }
     </style>
 </head>
-<body class="w-screen h-screen relative flex flex-col justify-between bg-[#020106] overflow-hidden">
+<body class="w-full h-[100dvh] relative flex flex-col justify-between bg-[#020106] overflow-hidden">
 
     <!-- Top Scientific Navigation & Telemetry Header -->
-    <header class="w-full z-30 px-4 py-2.5 flex flex-wrap items-center justify-between gap-3 glass-hud border-b border-purple-500/20">
+    <header class="w-full z-30 px-3 sm:px-4 py-2 flex flex-wrap items-center justify-between gap-2 glass-hud border-b border-purple-500/20 shrink-0">
         <!-- Brand & Instrument Identity -->
-        <div class="flex items-center space-x-3">
-            <div id="brandBadgeIcon" class="relative w-9 h-9 rounded-full bg-gradient-to-br from-purple-500 via-indigo-600 to-violet-950 flex items-center justify-center shadow-lg shadow-purple-600/30 border border-purple-300/30 transition-all duration-500">
+        <div class="flex items-center space-x-2.5">
+            <div id="brandBadgeIcon" class="relative w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-gradient-to-br from-purple-500 via-indigo-600 to-violet-950 flex items-center justify-center shadow-lg shadow-purple-600/30 border border-purple-300/30 transition-all duration-500 shrink-0">
                 <!-- 24-LED Ring Mini Icon -->
-                <svg class="w-5 h-5 text-white" viewBox="0 0 24 24" fill="none">
+                <svg class="w-4 h-4 sm:w-5 sm:h-5 text-white" viewBox="0 0 24 24" fill="none">
                     <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.2" stroke-opacity="0.4"/>
                     <circle cx="12" cy="12" r="5" stroke="currentColor" stroke-width="2" stroke-dasharray="1 2.2" stroke-linecap="round"/>
                     <circle cx="12" cy="12" r="1.5" fill="currentColor"/>
@@ -99,18 +116,18 @@
             </div>
             <div>
                 <div class="flex items-center space-x-2">
-                    <h1 class="font-cinzel text-sm sm:text-base font-bold tracking-wider text-white">CYMASCOPE LAB</h1>
-                    <span id="headerFreqTag" class="text-[10px] font-mono-tech uppercase px-2 py-0.5 rounded bg-purple-950/90 text-purple-200 border border-purple-500/40 transition-colors duration-300">132Hz Root • 528Hz • 741Hz</span>
+                    <h1 class="font-cinzel text-xs sm:text-base font-bold tracking-wider text-white">CYMASCOPE LAB</h1>
+                    <span id="headerFreqTag" class="text-[9px] sm:text-[10px] font-mono-tech uppercase px-1.5 sm:px-2 py-0.5 rounded bg-purple-950/90 text-purple-200 border border-purple-500/40 transition-colors duration-300">132Hz Root • 528Hz • 741Hz</span>
                 </div>
-                <p id="headerSubTitle" class="text-[11px] text-purple-300/80 hidden sm:block">DNA Repair &amp; Awakening Dual • 24-LED Water Interferometry &amp; Cortical Entrainment</p>
+                <p id="headerSubTitle" class="text-[11px] text-purple-300/80 hidden md:block">DNA Repair &amp; Awakening Dual • 24-LED Water Interferometry &amp; Cortical Entrainment</p>
             </div>
         </div>
 
         <!-- Live Breath Phase & Acoustic Spectrum Pill -->
-        <div class="flex items-center space-x-3 glass-pill px-3.5 py-1.5 rounded-full">
-            <div class="flex items-center space-x-2">
-                <span class="text-[10px] font-mono-tech uppercase tracking-wider text-purple-400">Phase:</span>
-                <span id="breathPhaseBadge" class="text-xs font-mono-tech font-semibold text-emerald-300 min-w-[135px] text-center px-2 py-0.5 rounded-full bg-emerald-950/60 border border-emerald-500/30">
+        <div class="flex items-center space-x-2.5 glass-pill px-3 py-1 rounded-full">
+            <div class="flex items-center space-x-1.5">
+                <span class="text-[10px] font-mono-tech uppercase tracking-wider text-purple-400 hidden sm:inline">Phase:</span>
+                <span id="breathPhaseBadge" class="text-[10px] sm:text-xs font-mono-tech font-semibold text-emerald-300 min-w-[125px] sm:min-w-[135px] text-center px-2 py-0.5 rounded-full bg-emerald-950/60 border border-emerald-500/30">
                     STANDBY (24-LED RING)
                 </span>
             </div>
@@ -121,64 +138,72 @@
 
         <!-- Viewport Layout Switcher -->
         <div class="flex items-center bg-purple-950/50 p-1 rounded-xl border border-purple-800/40 space-x-1">
-            <button onclick="setViewportLayout('split')" id="layoutBtn-split" class="px-3 py-1 text-xs font-medium rounded-lg transition-all bg-purple-600 text-white shadow shadow-purple-600/40">
-                Split View (Dish + Brain)
+            <button onclick="setViewportLayout('split')" id="layoutBtn-split" class="px-2.5 sm:px-3 py-1 text-[11px] sm:text-xs font-medium rounded-lg transition-all bg-purple-600 text-white shadow shadow-purple-600/40">
+                Split
             </button>
-            <button onclick="setViewportLayout('dish')" id="layoutBtn-dish" class="px-3 py-1 text-xs font-medium rounded-lg transition-all text-purple-300 hover:text-white">
-                CymaScope Dish
+            <button onclick="setViewportLayout('dish')" id="layoutBtn-dish" class="px-2.5 sm:px-3 py-1 text-[11px] sm:text-xs font-medium rounded-lg transition-all text-purple-300 hover:text-white">
+                Dish
             </button>
-            <button onclick="setViewportLayout('brain')" id="layoutBtn-brain" class="px-3 py-1 text-xs font-medium rounded-lg transition-all text-purple-300 hover:text-white">
-                3D Neural Brain
+            <button onclick="setViewportLayout('brain')" id="layoutBtn-brain" class="px-2.5 sm:px-3 py-1 text-[11px] sm:text-xs font-medium rounded-lg transition-all text-purple-300 hover:text-white">
+                3D Brain
             </button>
         </div>
     </header>
 
     <!-- Main Split / Dual Simulation Area -->
-    <main id="mainStage" class="relative flex-grow w-full h-full flex flex-col lg:flex-row overflow-hidden bg-black">
+    <main id="mainStage" class="relative flex-grow w-full min-h-0 flex flex-col lg:flex-row overflow-hidden bg-black">
         
         <!-- VIEWPORT 1: Top / Left — Physical CymaScope 24-LED Water Dish -->
-        <section id="dishPane" class="relative w-full h-[54%] lg:h-full lg:w-1/2 flex items-center justify-center bg-black overflow-hidden border-b lg:border-b-0 lg:border-r border-purple-950/60 transition-all duration-300">
+        <section id="dishPane" class="relative w-full h-[52%] lg:h-full lg:w-1/2 flex items-center justify-center bg-black overflow-hidden border-b lg:border-b-0 lg:border-r border-purple-950/60 transition-all duration-300">
             <div id="dishCanvasContainer" class="w-full h-full flex items-center justify-center"></div>
 
             <!-- Subtle Scientific Overlay Labels on CymaScope Viewport -->
-            <div class="absolute top-3 left-4 pointer-events-none flex flex-col space-y-1">
+            <div class="absolute top-2.5 left-3 sm:top-3 sm:left-4 pointer-events-none flex flex-col space-y-0.5">
                 <div class="flex items-center space-x-2">
                     <span class="w-2 h-2 rounded-full bg-purple-400 animate-pulse"></span>
-                    <span class="text-[11px] font-mono-tech uppercase tracking-widest text-purple-200/90">CHAMBER A: WATER CYMATICS (24-LED RING)</span>
+                    <span class="text-[10px] sm:text-[11px] font-mono-tech uppercase tracking-widest text-purple-200/90">CHAMBER A: WATER CYMATICS (24-LED RING)</span>
                 </div>
-                <span id="cymaticsModeReadout" class="text-[10px] font-mono-tech text-purple-400/80">
+                <span id="cymaticsModeReadout" class="text-[9px] sm:text-[10px] font-mono-tech text-purple-400/80">
                     Mode: J₀(kr) + J₆/J₁₂ Faraday Standing Wave • f₀ = 132.0 Hz (528/4)
                 </span>
             </div>
 
             <!-- Quick Trigger Breath Button on Dish Corner -->
-            <div class="absolute top-3 right-4 z-10 flex items-center space-x-2">
-                <button onclick="triggerFreshBreath()" title="Restart Mantra Breath Cycle" class="px-2.5 py-1 rounded-lg glass-pill text-[11px] font-mono-tech text-purple-200 hover:text-white hover:border-purple-400 transition flex items-center space-x-1.5">
+            <div class="absolute top-2.5 right-3 sm:top-3 sm:right-4 z-10 flex items-center space-x-2">
+                <button onclick="triggerFreshBreath()" title="Restart Mantra Breath Cycle" class="px-2.5 py-1 rounded-lg glass-pill text-[10px] sm:text-[11px] font-mono-tech text-purple-200 hover:text-white hover:border-purple-400 transition flex items-center space-x-1.5">
                     <svg class="w-3.5 h-3.5 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
                     </svg>
-                    <span>Re-Cue Breath</span>
+                    <span class="hidden sm:inline">Re-Cue Breath</span>
                 </button>
             </div>
         </section>
 
         <!-- VIEWPORT 2: Bottom / Right — 3D Brain Neural Resonance Simulation -->
-        <section id="brainPane" class="relative w-full h-[46%] lg:h-full lg:w-1/2 flex items-center justify-center bg-[#030108] overflow-hidden transition-all duration-300">
+        <section id="brainPane" class="relative w-full h-[48%] lg:h-full lg:w-1/2 flex items-center justify-center bg-[#030108] overflow-hidden transition-all duration-300">
             <div id="brainCanvasContainer" class="w-full h-full relative cursor-grab active:cursor-grabbing"></div>
 
             <!-- Subtle Telemetry Overlay on 3D Brain Viewport -->
-            <div class="absolute top-3 left-4 pointer-events-none flex flex-col space-y-1">
+            <div class="absolute top-2.5 left-3 sm:top-3 sm:left-4 pointer-events-none flex flex-col space-y-0.5">
                 <div class="flex items-center space-x-2">
                     <span id="brainDotIndicator" class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                    <span id="brainHeaderLabel" class="text-[11px] font-mono-tech uppercase tracking-widest text-emerald-200/90">CHAMBER B: CORTICAL BIO-RESONANCE</span>
+                    <span id="brainHeaderLabel" class="text-[10px] sm:text-[11px] font-mono-tech uppercase tracking-widest text-emerald-200/90">CHAMBER B: CORTICAL BIO-RESONANCE</span>
                 </div>
-                <span id="brainTelemetryReadout" class="text-[10px] font-mono-tech text-purple-300/80">
+                <span id="brainTelemetryReadout" class="text-[9px] sm:text-[10px] font-mono-tech text-purple-300/80">
                     Thalamocortical Entrainment • 528Hz &amp; 741Hz Synaptic Coherence
                 </span>
             </div>
 
+            <!-- Binaural Entrainment Live Badge (Bottom Left of Brain Viewport) -->
+            <div id="binauralHudBadge" class="absolute bottom-3 left-3 sm:bottom-4 sm:left-4 pointer-events-none opacity-0 transition-opacity duration-300">
+                <div class="glass-pill px-3 py-1.5 rounded-xl border border-emerald-400/40 flex items-center space-x-2">
+                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+                    <span id="binauralHudText" class="text-[10px] font-mono-tech text-emerald-200">BINAURAL: 6.0Hz THETA (L:264Hz / R:270Hz)</span>
+                </div>
+            </div>
+
             <!-- Bottom-Right Research Card Badge -->
-            <div class="absolute bottom-4 right-4 pointer-events-none hidden sm:flex flex-col items-end max-w-xs">
+            <div class="absolute bottom-3 right-3 sm:bottom-4 sm:right-4 pointer-events-none hidden sm:flex flex-col items-end max-w-xs">
                 <div id="freqResearchCard" class="glass-pill px-3.5 py-2 rounded-xl border border-purple-500/30 text-right shadow-xl transition-all duration-300">
                     <div class="flex items-center justify-end space-x-1.5">
                         <span id="cardColorDot" class="w-2 h-2 rounded-full bg-purple-400"></span>
@@ -201,6 +226,7 @@
                     <h2 class="font-cinzel text-lg font-bold text-white tracking-wide">Initialize CymaScope &amp; Formant Choir</h2>
                     <p class="text-xs text-purple-200/80 mt-1 leading-relaxed">
                         Experiences authentic multi-voice 132 Hz vocal formant synthesis (<span class="text-purple-300 font-semibold">"Oooo... Mmmm..."</span>) with subtle 528 Hz &amp; 741 Hz harmonic overtones and real-time 24-LED water cymatics.
+                        <br><span class="text-[11px] text-emerald-300/90 mt-1 inline-block">Includes Dichotic Binaural Beats Entrainment (Headphones Recommended)</span>
                     </p>
                 </div>
                 <button onclick="startExperience()" class="w-full py-3.5 px-6 rounded-2xl bg-gradient-to-r from-purple-600 via-violet-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-semibold text-sm tracking-wider uppercase shadow-lg shadow-purple-600/50 border border-purple-300/40 transition-all transform hover:-translate-y-0.5">
@@ -211,8 +237,8 @@
     </main>
 
     <!-- Researched Healing Frequencies Selection Matrix Bar -->
-    <section class="w-full z-30 px-4 py-2 bg-[#060310]/90 backdrop-blur-md border-t border-purple-500/20">
-        <div class="max-w-7xl mx-auto flex items-center justify-between gap-3">
+    <section class="w-full z-30 px-3 sm:px-4 py-1.5 bg-[#060310]/90 backdrop-blur-md border-t border-purple-500/20 shrink-0">
+        <div class="max-w-7xl mx-auto flex items-center justify-between gap-2.5">
             <div class="flex items-center space-x-2 shrink-0">
                 <span class="text-[10px] font-mono-tech uppercase tracking-widest text-purple-300/90 hidden sm:inline">Healing Spectrum:</span>
                 <button onclick="toggleAutoFreqJourney()" id="autoJourneyBtn" title="Automatically step through all 11 healing frequencies on each breath cycle" class="px-2.5 py-1 rounded-lg text-[10px] font-mono-tech uppercase tracking-wider bg-purple-950/80 text-purple-300 border border-purple-700/50 hover:border-purple-400 hover:text-white transition flex items-center space-x-1">
@@ -228,13 +254,13 @@
         </div>
     </section>
 
-    <!-- Bottom Interactive Acoustic & Cymatics Control Console -->
-    <footer class="w-full z-30 px-4 py-2.5 glass-hud border-t border-purple-500/25">
-        <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-4">
+    <!-- Bottom Interactive Acoustic, Cymatics & Binaural Control Console -->
+    <footer class="w-full z-30 px-3 sm:px-4 py-2 glass-hud border-t border-purple-500/25 shrink-0">
+        <div class="max-w-7xl mx-auto flex flex-col xl:flex-row items-stretch xl:items-center justify-between gap-2.5">
             
             <!-- Left: Master Play/Pause & Breath Cycle Mode -->
-            <div class="flex items-center space-x-2.5">
-                <button id="playPauseBtn" onclick="toggleAudio()" class="flex items-center space-x-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-semibold text-xs uppercase tracking-wider shadow-lg shadow-purple-700/40 border border-purple-400/30 transition-all">
+            <div class="flex items-center justify-between sm:justify-start space-x-2 shrink-0">
+                <button id="playPauseBtn" onclick="toggleAudio()" class="flex items-center space-x-2 px-4 sm:px-5 py-2 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-semibold text-xs uppercase tracking-wider shadow-lg shadow-purple-700/40 border border-purple-400/30 transition-all shrink-0">
                     <svg id="playPauseIcon" class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
                         <path d="M8 5v14l11-7z"/>
                     </svg>
@@ -242,22 +268,22 @@
                 </button>
 
                 <!-- Breath Cadence Selector -->
-                <div class="flex items-center bg-purple-950/60 p-1 rounded-xl border border-purple-800/40">
-                    <button onclick="setBreathMode('auto')" id="breathMode-auto" class="px-2.5 py-1.5 text-[11px] font-medium rounded-lg bg-purple-600 text-white transition">
+                <div class="flex items-center bg-purple-950/60 p-1 rounded-xl border border-purple-800/40 shrink-0">
+                    <button onclick="setBreathMode('auto')" id="breathMode-auto" class="px-2 sm:px-2.5 py-1 text-[10px] sm:text-[11px] font-medium rounded-lg bg-purple-600 text-white transition">
                         Auto Cycle (12.5s)
                     </button>
-                    <button onclick="setBreathMode('hold')" id="breathMode-hold" class="px-2.5 py-1.5 text-[11px] font-medium rounded-lg text-purple-300 hover:text-white transition">
-                        Continuous Chant
+                    <button onclick="setBreathMode('hold')" id="breathMode-hold" class="px-2 sm:px-2.5 py-1 text-[10px] sm:text-[11px] font-medium rounded-lg text-purple-300 hover:text-white transition">
+                        Continuous
                     </button>
                 </div>
             </div>
 
-            <!-- Center/Right: Precision Acoustic & Physics Sliders -->
-            <div class="flex flex-wrap items-center gap-4 sm:gap-6 flex-grow justify-end">
+            <!-- Center/Right: Precision Acoustic, Physics & Binaural Controls (Horizontally scrollable on small phones) -->
+            <div class="flex items-center gap-3.5 sm:gap-5 overflow-x-auto no-scrollbar py-0.5 xl:justify-end">
                 
-                <!-- Slider 1: 132Hz AUM Vocal Choir Level -->
-                <div class="flex flex-col w-28 sm:w-32">
-                    <div class="flex justify-between text-[11px] mb-1">
+                <!-- Slider 1: AUM Vocal Choir Level -->
+                <div class="flex flex-col w-24 sm:w-28 shrink-0">
+                    <div class="flex justify-between text-[10px] sm:text-[11px] mb-1">
                         <span class="text-purple-300 font-medium">AUM Choir</span>
                         <span id="choirVolLabel" class="font-mono-tech text-purple-200">90%</span>
                     </div>
@@ -265,8 +291,8 @@
                 </div>
 
                 <!-- Slider 2: Vowel Formant Morph (Oooo <-> Mmmm) -->
-                <div class="flex flex-col w-32 sm:w-36">
-                    <div class="flex justify-between text-[11px] mb-1">
+                <div class="flex flex-col w-28 sm:w-32 shrink-0">
+                    <div class="flex justify-between text-[10px] sm:text-[11px] mb-1">
                         <span class="text-purple-300 font-medium">Vowel Morph</span>
                         <span id="vowelMorphLabel" class="font-mono-tech text-emerald-300">Auto (O→M)</span>
                     </div>
@@ -274,8 +300,8 @@
                 </div>
 
                 <!-- Slider 3: Primary Healing Harmonic Shimmer -->
-                <div class="flex flex-col w-28 sm:w-32">
-                    <div class="flex justify-between text-[11px] mb-1">
+                <div class="flex flex-col w-24 sm:w-28 shrink-0">
+                    <div class="flex justify-between text-[10px] sm:text-[11px] mb-1">
                         <span id="primaryLayerTitle" class="text-purple-300 font-medium">528Hz Layer</span>
                         <span id="layer528Label" class="font-mono-tech text-purple-200">28%</span>
                     </div>
@@ -283,8 +309,8 @@
                 </div>
 
                 <!-- Slider 4: Secondary Cleansing / Fifth Harmonic Layer -->
-                <div class="flex flex-col w-28 sm:w-32">
-                    <div class="flex justify-between text-[11px] mb-1">
+                <div class="flex flex-col w-24 sm:w-28 shrink-0">
+                    <div class="flex justify-between text-[10px] sm:text-[11px] mb-1">
                         <span id="secondaryLayerTitle" class="text-purple-300 font-medium">741Hz Layer</span>
                         <span id="layer741Label" class="font-mono-tech text-purple-200">18%</span>
                     </div>
@@ -292,12 +318,39 @@
                 </div>
 
                 <!-- Slider 5: Water Viscosity / Wave Sharpness -->
-                <div class="flex flex-col w-28 sm:w-32">
-                    <div class="flex justify-between text-[11px] mb-1">
+                <div class="flex flex-col w-24 sm:w-28 shrink-0">
+                    <div class="flex justify-between text-[10px] sm:text-[11px] mb-1">
                         <span class="text-purple-300 font-medium">Wave Drive</span>
                         <span id="driveLabel" class="font-mono-tech text-purple-200">100%</span>
                     </div>
                     <input type="range" id="driveSlider" min="30" max="160" value="100" oninput="updateDriveParam(this.value)">
+                </div>
+
+                <!-- Divider -->
+                <div class="h-8 w-[1px] bg-purple-800/50 shrink-0"></div>
+
+                <!-- Dichotic Binaural Beats Brainwave Entrainment Console -->
+                <div class="flex flex-col min-w-[205px] sm:min-w-[230px] bg-purple-950/35 px-2.5 py-1 rounded-xl border border-purple-700/30 shrink-0">
+                    <div class="flex items-center justify-between gap-2 mb-1">
+                        <label class="flex items-center cursor-pointer">
+                            <input type="checkbox" id="binauralToggle" class="sr-only peer" onchange="toggleBinaural(this.checked)">
+                            <div class="relative w-8 h-4 bg-purple-950 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-purple-400 after:border-gray-300 after:border after:rounded-full after:h-3 after:w-3 after:transition-all peer-checked:bg-emerald-600"></div>
+                            <span class="ml-1.5 text-[10px] sm:text-[11px] text-purple-200 font-semibold">Binaural</span>
+                        </label>
+                        <!-- Quick Brainwave Band Presets -->
+                        <div class="flex items-center space-x-1">
+                            <button onclick="setBinauralPreset(2.5)" title="Delta (2.5 Hz) Deep Rest & Pain Relief" class="px-1.5 py-0.5 rounded text-[9px] font-mono-tech bg-purple-900/70 hover:bg-purple-600 text-purple-200 transition">δ</button>
+                            <button onclick="setBinauralPreset(6.0)" title="Theta (6.0 Hz) Deep Meditation" class="px-1.5 py-0.5 rounded text-[9px] font-mono-tech bg-purple-900/70 hover:bg-purple-600 text-purple-200 transition">θ</button>
+                            <button onclick="setBinauralPreset(7.83)" title="Schumann Earth Resonance (7.83 Hz)" class="px-1.5 py-0.5 rounded text-[9px] font-mono-tech bg-emerald-900/80 hover:bg-emerald-600 text-emerald-200 border border-emerald-500/30 transition">7.83</button>
+                            <button onclick="setBinauralPreset(10.0)" title="Alpha (10.0 Hz) Calm Focus" class="px-1.5 py-0.5 rounded text-[9px] font-mono-tech bg-purple-900/70 hover:bg-purple-600 text-purple-200 transition">α</button>
+                            <button onclick="setBinauralPreset(40.0)" title="Gamma (40.0 Hz) Peak Cognition" class="px-1.5 py-0.5 rounded text-[9px] font-mono-tech bg-purple-900/70 hover:bg-purple-600 text-purple-200 transition">γ</button>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-2 w-full">
+                        <span id="binauralStateTag" class="text-[9px] font-mono-tech uppercase text-purple-400 w-11">Theta</span>
+                        <input type="range" id="binauralBeatSlider" min="1" max="40" value="6" step="0.01" oninput="updateBinauralBeat(this.value)" class="flex-1">
+                        <span id="binauralBeatLabel" class="text-[10px] font-mono-tech text-emerald-300 w-12 text-right">6.0 Hz</span>
+                    </div>
                 </div>
 
             </div>
@@ -579,6 +632,16 @@
         let autoFreqJourney = false;
         let lastCycleIndex = 0;
 
+        // Pre-convert RGB arrays to THREE.Vector3 on each preset to avoid per-frame garbage collection on mobile
+        HEALING_FREQUENCIES.forEach(p => {
+            p.vDeepWater = new THREE.Vector3(...p.deepWater);
+            p.vWaterPrimary = new THREE.Vector3(...p.waterPrimary);
+            p.vWaterAccent = new THREE.Vector3(...p.waterAccent);
+            p.vCortexColor = new THREE.Vector3(...p.cortexColor);
+            p.vSynapseDeep = new THREE.Vector3(...p.synapseDeep);
+            p.vSynapseBright = new THREE.Vector3(...p.synapseBright);
+        });
+
         // Smoothly interpolated visual parameters for 60 FPS color & geometry transitions
         let currentTheme = {
             symA: 6.0,
@@ -606,6 +669,58 @@
         let currentVowelMorph = 0.0;    // 0.0 = Open "OOOO", 1.0 = Closed nasal "MMMM"
         let currentResidualSlosh = 0.0; // Gentle fluid motion immediately after voice stops
         let waterDriveScale = 1.0;
+
+        // Dichotic Binaural Beats Therapy State
+        let binauralEnabled = false;
+        let binauralBeatHz = 6.0;
+        let binauralCarrier = 264.0; // Harmonically locked to preset root (e.g., 132Hz * 2 = 264Hz)
+        let oscBinauralL = null, oscBinauralR = null;
+        let gainBinauralL = null, gainBinauralR = null;
+        let binauralMerger = null;
+
+        // Compute pure harmonic carrier in the optimal 160Hz–320Hz Perceptual Binaural Window
+        function getHarmonicBinauralCarrier(preset) {
+            let c = preset.rootFreq;
+            while (c < 165.0) c *= 2.0;
+            while (c > 330.0) c *= 0.5;
+            return c;
+        }
+
+        function getBrainwaveBandName(hz) {
+            if (Math.abs(hz - 7.83) < 0.15) return 'Schumann';
+            if (hz <= 4.0) return 'Delta';
+            if (hz <= 8.0) return 'Theta';
+            if (hz <= 13.0) return 'Alpha';
+            if (hz <= 30.0) return 'Beta';
+            return 'Gamma';
+        }
+
+        function updateBinauralHud() {
+            const badge = document.getElementById('binauralHudBadge');
+            const text = document.getElementById('binauralHudText');
+            const stateTag = document.getElementById('binauralStateTag');
+            const preset = HEALING_FREQUENCIES[activeFreqIndex];
+            binauralCarrier = getHarmonicBinauralCarrier(preset);
+            const band = getBrainwaveBandName(binauralBeatHz);
+
+            if (stateTag) {
+                stateTag.innerText = band;
+                stateTag.className = binauralEnabled
+                    ? "text-[9px] font-mono-tech uppercase text-emerald-300 w-12 font-semibold"
+                    : "text-[9px] font-mono-tech uppercase text-purple-400 w-12";
+            }
+
+            if (badge && text) {
+                if (binauralEnabled) {
+                    badge.classList.remove('opacity-0');
+                    const fL = (binauralCarrier - binauralBeatHz * 0.5).toFixed(1);
+                    const fR = (binauralCarrier + binauralBeatHz * 0.5).toFixed(1);
+                    text.innerText = `BINAURAL: ${binauralBeatHz.toFixed(2).replace(/\.00$/, '.0')}Hz ${band.toUpperCase()} (L:${fL}Hz • R:${fR}Hz)`;
+                } else {
+                    badge.classList.add('opacity-0');
+                }
+            }
+        }
 
         function buildFrequencySelectorUI() {
             const container = document.getElementById('freqSelectorContainer');
@@ -669,6 +784,7 @@
 
             // Retune Live Web Audio Oscillators smoothly
             retuneAudioToPreset(preset);
+            updateBinauralHud();
 
             if (userTriggered) {
                 showToast(`Tuned to ${preset.name}`);
@@ -712,8 +828,8 @@
             });
 
             if (layout === 'split') {
-                dishPane.className = "relative w-full h-[54%] lg:h-full lg:w-1/2 flex items-center justify-center bg-black overflow-hidden border-b lg:border-b-0 lg:border-r border-purple-950/60 transition-all duration-300";
-                brainPane.className = "relative w-full h-[46%] lg:h-full lg:w-1/2 flex items-center justify-center bg-[#030108] overflow-hidden transition-all duration-300";
+                dishPane.className = "relative w-full h-[52%] lg:h-full lg:w-1/2 flex items-center justify-center bg-black overflow-hidden border-b lg:border-b-0 lg:border-r border-purple-950/60 transition-all duration-300";
+                brainPane.className = "relative w-full h-[48%] lg:h-full lg:w-1/2 flex items-center justify-center bg-[#030108] overflow-hidden transition-all duration-300";
             } else if (layout === 'dish') {
                 dishPane.className = "relative w-full h-full flex items-center justify-center bg-black overflow-hidden transition-all duration-300";
                 brainPane.className = "hidden";
@@ -1031,8 +1147,35 @@
             masterGain.connect(analyser);
             analyser.connect(audioCtx.destination);
 
+            // Dichotic Binaural Beats Oscillators (Connected directly to masterGain to preserve 100% Left/Right stereo isolation)
+            setupBinauralOscillators();
+
+            // iOS / Android interruption recovery listener
+            audioCtx.addEventListener('statechange', () => {
+                if (isAudioPlaying && audioCtx && (audioCtx.state === 'suspended' || audioCtx.state === 'interrupted')) {
+                    audioCtx.resume();
+                }
+            });
+
             audioInitialized = true;
             updateSynthParams();
+        }
+
+        // Helper for iOS Safari / Android WebKit immediate gesture audio unlock
+        function unlockMobileAudioContext() {
+            if (!audioCtx) return;
+            if (audioCtx.state === 'suspended' || audioCtx.state === 'interrupted') {
+                audioCtx.resume();
+            }
+            try {
+                const silentBuf = audioCtx.createBuffer(1, 1, 22050);
+                const src = audioCtx.createBufferSource();
+                src.buffer = silentBuf;
+                src.connect(audioCtx.destination);
+                src.start(0);
+            } catch (e) {
+                // Ignore if already unlocked
+            }
         }
 
         function retuneAudioToPreset(preset) {
@@ -1057,6 +1200,12 @@
             if (formantNasal) {
                 formantNasal.frequency.setTargetAtTime(preset.rootFreq * 2.0, now, 0.22);
             }
+            // Retune binaural carrier to exact harmonic octave of the active healing frequency
+            if (oscBinauralL && oscBinauralR) {
+                binauralCarrier = getHarmonicBinauralCarrier(preset);
+                oscBinauralL.frequency.setTargetAtTime(binauralCarrier - binauralBeatHz * 0.5, now, 0.22);
+                oscBinauralR.frequency.setTargetAtTime(binauralCarrier + binauralBeatHz * 0.5, now, 0.22);
+            }
         }
 
         function updateSynthParams() {
@@ -1074,6 +1223,91 @@
             // Keep 528Hz and 741Hz musical and balanced even at 100% slider
             gain528.gain.setTargetAtTime(Math.pow(l528Val / 100.0, 1.5) * 0.14, now, 0.08);
             gain741.gain.setTargetAtTime(Math.pow(l741Val / 100.0, 1.5) * 0.09, now, 0.08);
+            updateBinauralGain();
+        }
+
+        function toggleBinaural(enabled) {
+            binauralEnabled = enabled;
+            const toggleInput = document.getElementById('binauralToggle');
+            if (toggleInput && toggleInput.checked !== enabled) {
+                toggleInput.checked = enabled;
+            }
+            updateBinauralHud();
+            if (audioInitialized) {
+                updateBinauralGain();
+            }
+            if (enabled) {
+                const band = getBrainwaveBandName(binauralBeatHz);
+                showToast(`Dichotic Binaural ${binauralBeatHz.toFixed(2).replace(/\.00$/, '.0')}Hz (${band}) Active — Use Headphones`);
+            } else {
+                showToast("Binaural Beats Entrainment Off");
+            }
+        }
+
+        function setBinauralPreset(hz) {
+            const slider = document.getElementById('binauralBeatSlider');
+            if (slider) slider.value = hz;
+            if (!binauralEnabled) {
+                toggleBinaural(true);
+            }
+            updateBinauralBeat(hz);
+        }
+
+        function updateBinauralBeat(val) {
+            binauralBeatHz = parseFloat(val);
+            const label = document.getElementById('binauralBeatLabel');
+            if (label) {
+                label.innerText = (binauralBeatHz % 1 === 0 ? binauralBeatHz.toFixed(1) : binauralBeatHz.toFixed(2).replace(/0$/, '')) + ' Hz';
+            }
+            updateBinauralHud();
+
+            if (audioInitialized && audioCtx && oscBinauralL && oscBinauralR) {
+                const now = audioCtx.currentTime;
+                oscBinauralL.frequency.setTargetAtTime(binauralCarrier - binauralBeatHz * 0.5, now, 0.08);
+                oscBinauralR.frequency.setTargetAtTime(binauralCarrier + binauralBeatHz * 0.5, now, 0.08);
+            }
+        }
+
+        function updateBinauralGain() {
+            if (!audioInitialized || !gainBinauralL || !gainBinauralR || !audioCtx) return;
+            const now = audioCtx.currentTime;
+            // Maintain continuous binaural entrainment while playing (gentle breath modulation applied in updateBreathAndFormants)
+            const target = (binauralEnabled && isAudioPlaying) ? 0.045 : 0.0001;
+            gainBinauralL.gain.setTargetAtTime(target, now, 0.15);
+            gainBinauralR.gain.setTargetAtTime(target, now, 0.15);
+        }
+
+        function setupBinauralOscillators() {
+            if (!audioCtx || oscBinauralL) return;
+            const now = audioCtx.currentTime;
+            const preset = HEALING_FREQUENCIES[activeFreqIndex];
+            binauralCarrier = getHarmonicBinauralCarrier(preset);
+
+            // Use a 2-channel Merger Node for 100% hard Left (ch 0) & Right (ch 1) ear separation on all iOS/Android devices
+            binauralMerger = audioCtx.createChannelMerger(2);
+
+            // Left ear oscillator: Carrier - Beat/2
+            oscBinauralL = audioCtx.createOscillator();
+            oscBinauralL.type = 'sine';
+            oscBinauralL.frequency.setValueAtTime(binauralCarrier - binauralBeatHz * 0.5, now);
+            gainBinauralL = audioCtx.createGain();
+            gainBinauralL.gain.setValueAtTime(0.0001, now);
+            oscBinauralL.connect(gainBinauralL);
+            gainBinauralL.connect(binauralMerger, 0, 0);
+            oscBinauralL.start(now);
+
+            // Right ear oscillator: Carrier + Beat/2
+            oscBinauralR = audioCtx.createOscillator();
+            oscBinauralR.type = 'sine';
+            oscBinauralR.frequency.setValueAtTime(binauralCarrier + binauralBeatHz * 0.5, now);
+            gainBinauralR = audioCtx.createGain();
+            gainBinauralR.gain.setValueAtTime(0.0001, now);
+            oscBinauralR.connect(gainBinauralR);
+            gainBinauralR.connect(binauralMerger, 0, 1);
+            oscBinauralR.start(now);
+
+            // Connect directly to masterGain (bypassing reverb so L and R channels never bleed into each other)
+            binauralMerger.connect(masterGain);
         }
 
         function startExperience() {
@@ -1088,9 +1322,7 @@
             if (!audioInitialized) {
                 initAudioEngine();
             }
-            if (audioCtx && audioCtx.state === 'suspended') {
-                audioCtx.resume();
-            }
+            unlockMobileAudioContext();
 
             isAudioPlaying = !isAudioPlaying;
             const btnText = document.getElementById('playPauseText');
@@ -1105,7 +1337,8 @@
                 statusDot.className = "absolute -top-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-emerald-400 ring-2 ring-black animate-ping";
                 breathStartTime = performance.now() * 0.001;
                 masterGain.gain.setTargetAtTime(0.85, audioCtx.currentTime, 0.25);
-                showToast("OM (AUM) 132Hz Formant Choir + 528Hz/741Hz Active");
+                updateBinauralGain();
+                showToast("OM (AUM) Formant Choir & Cymatics Active");
             } else {
                 btnText.innerText = "Resume Chant";
                 btnIcon.innerHTML = '<path d="M8 5v14l11-7z"/>';
@@ -1113,6 +1346,7 @@
                 if (breathEnvGain) {
                     breathEnvGain.gain.setTargetAtTime(0.0001, audioCtx.currentTime, 0.25);
                 }
+                updateBinauralGain();
                 showToast("Chant Paused — Water Settling to 24-LED Ring");
             }
         }
@@ -1222,6 +1456,13 @@
                 // Warmth Lowpass closes down gently during "Mmmm" for realistic closed-lip hum
                 const lpFreq = 2600.0 * (1.0 - m) + 920.0 * m;
                 warmthLowpass.frequency.setTargetAtTime(lpFreq, now, 0.05);
+
+                // Keep Binaural Beats gently active even during the breath rest phase for uninterrupted neural entrainment
+                if (binauralEnabled && gainBinauralL && gainBinauralR) {
+                    const binLevel = 0.028 + 0.024 * currentVocalEnv;
+                    gainBinauralL.gain.setTargetAtTime(binLevel, now, 0.08);
+                    gainBinauralR.gain.setTargetAtTime(binLevel, now, 0.08);
+                }
             }
         }
 
@@ -1241,7 +1482,7 @@
             dishCamera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
 
             dishRenderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: "high-performance" });
-            dishRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            dishRenderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
             dishRenderer.setSize(container.clientWidth, container.clientHeight);
             container.appendChild(dishRenderer.domElement);
 
@@ -1268,6 +1509,8 @@
                 uniform float uSymmetryA;
                 uniform float uSymmetryB;
                 uniform float uRadialK;
+                uniform float uBinauralActive;
+                uniform float uBinauralBeatHz;
                 uniform vec3 uDeepWaterCol;
                 uniform vec3 uWaterPrimaryCol;
                 uniform vec3 uWaterAccentCol;
@@ -1309,13 +1552,20 @@
                     float wallConfine = smoothstep(0.89, 0.72, r);
                     float besselDecay = 1.0 / sqrt(max(r, 0.06));
 
-                    // 1. Residual low-frequency fluid slosh (makes the 24-LED ring wobble as it settles, like 0:08 in video)
+                    // 1. Residual low-frequency fluid slosh + optional subtle Binaural Beat phase ripple
                     float sloshAmt = uResidualSlosh * 0.018 + env * 0.006;
                     float slosh = sloshAmt * sin(p.x * 5.5 + uTime * 4.2) * cos(p.y * 5.5 - uTime * 3.7) * smoothstep(0.0, 0.25, r);
 
-                    // If vocal chant is completely silent, only return the subtle settling slosh
+                    // Subtle counter-rotating dichotic binaural interference wave when Binaural Therapy is active
+                    float binauralWave = 0.0;
+                    if (uBinauralActive > 0.01) {
+                        float beatOmega = clamp(uBinauralBeatHz, 1.0, 20.0) * 0.85;
+                        binauralWave = uBinauralActive * 0.0045 * cos(theta * 2.0 + uTime * beatOmega) * sin(r * 18.0 - uTime * beatOmega) * smoothstep(0.05, 0.3, r);
+                    }
+
+                    // If vocal chant is completely silent, only return the subtle settling slosh + binaural micro-ripple
                     if (env < 0.002) {
-                        return slosh * wallConfine;
+                        return (slosh + binauralWave) * wallConfine;
                     }
 
                     // 2. Fundamental Concentric Bessel J0 Standing Rings
@@ -1346,12 +1596,14 @@
                     float rimCapillary = cos(theta * (uSymmetryB * 1.5) + r * 35.0) * sin(uTime * 10.0) * rimZone * ooooWeight * 0.55;
 
                     float totalWave = (concentricRing * 0.38 + mmmmRibs + faradayPetals * 0.85 + rimCapillary) * besselDecay * 0.022 * env;
-                    return (totalWave + slosh) * wallConfine;
+                    return (totalWave + slosh + binauralWave) * wallConfine;
                 }
 
                 void main() {
-                    // Normalized coordinates centered at (0,0) with dish radius ~ 0.88
-                    vec2 st = (gl_FragCoord.xy - 0.5 * uResolution.xy) / (min(uResolution.x, uResolution.y) * 0.5);
+                    // Device-Pixel-Ratio-Safe aspect-corrected coordinates centered at (0,0)
+                    vec2 centeredUv = vUv - 0.5;
+                    float minDim = max(min(uResolution.x, uResolution.y), 1.0);
+                    vec2 st = (centeredUv * uResolution) / (minDim * 0.5);
                     float r = length(st);
                     float theta = atan(st.y, st.x);
 
@@ -1469,6 +1721,8 @@
                 uSymmetryA: { value: 6.0 },
                 uSymmetryB: { value: 12.0 },
                 uRadialK: { value: 28.0 },
+                uBinauralActive: { value: 0.0 },
+                uBinauralBeatHz: { value: 6.0 },
                 uDeepWaterCol: { value: new THREE.Vector3(0.035, 0.015, 0.09) },
                 uWaterPrimaryCol: { value: new THREE.Vector3(0.46, 0.25, 0.92) },
                 uWaterAccentCol: { value: new THREE.Vector3(0.76, 0.65, 1.00) }
@@ -1704,6 +1958,8 @@
                 uVocalEnv: { value: 0.0 },
                 uVowelMorph: { value: 0.0 },
                 uHighEnergy: { value: 0.0 },
+                uBinauralActive: { value: 0.0 },
+                uBinauralBeatHz: { value: 6.0 },
                 uSynapseDeep: { value: new THREE.Vector3(0.58, 0.22, 0.94) },
                 uSynapseBright: { value: new THREE.Vector3(0.94, 0.50, 1.00) }
             };
@@ -1715,6 +1971,8 @@
                 uniform float uVocalEnv;
                 uniform float uVowelMorph;
                 uniform float uHighEnergy;
+                uniform float uBinauralActive;
+                uniform float uBinauralBeatHz;
 
                 varying float vIntensity;
                 varying float vRegion;
@@ -1729,9 +1987,17 @@
                     float ascendingWave = sin(pos.y * 5.5 - uTime * waveSpeed + aPhase * 0.35);
                     float radialWave = cos(distFromThalamus * 7.0 - uTime * 4.5 + aPhase * 0.2);
 
+                    // Bi-hemispheric phase-locked entrainment pulse when Binaural Beats are active
+                    float binauralSync = 0.0;
+                    if (uBinauralActive > 0.01) {
+                        float hemiSign = pos.x >= 0.0 ? 1.0 : -1.0;
+                        float beatRad = clamp(uBinauralBeatHz, 1.0, 24.0) * 1.2;
+                        binauralSync = 0.35 * uBinauralActive * (0.5 + 0.5 * sin(uTime * beatRad + hemiSign * 1.5708 + pos.z * 2.5));
+                    }
+
                     float firing = smoothstep(0.15, 0.95, 0.5 * ascendingWave + 0.5 * radialWave);
-                    float envBoost = 0.22 + 0.88 * uVocalEnv;
-                    vIntensity = firing * envBoost;
+                    float envBoost = 0.22 + 0.88 * uVocalEnv + binauralSync;
+                    vIntensity = clamp(firing * envBoost + binauralSync * 0.4, 0.0, 1.25);
 
                     // Subtle organic neural micro-oscillation during active chant
                     pos.x += sin(uTime * 2.5 + aPhase) * 0.008 * uVocalEnv;
@@ -1879,19 +2145,21 @@
 
             drawMiniSpectrum(bassEnergy, midEnergy, highEnergy);
 
-            // Smoothly interpolate color palette & cymatic nodal symmetry toward active Healing Frequency
+            // Smoothly interpolate color palette & cymatic nodal symmetry toward active Healing Frequency (Zero per-frame allocations)
             const targetPreset = HEALING_FREQUENCIES[activeFreqIndex];
             const lerpRate = 0.06;
             currentTheme.symA += (targetPreset.symA - currentTheme.symA) * lerpRate;
             currentTheme.symB += (targetPreset.symB - currentTheme.symB) * lerpRate;
             currentTheme.radialK += (targetPreset.radialK - currentTheme.radialK) * lerpRate;
 
-            currentTheme.deepWater.lerp(new THREE.Vector3(...targetPreset.deepWater), lerpRate);
-            currentTheme.waterPrimary.lerp(new THREE.Vector3(...targetPreset.waterPrimary), lerpRate);
-            currentTheme.waterAccent.lerp(new THREE.Vector3(...targetPreset.waterAccent), lerpRate);
-            currentTheme.cortexColor.lerp(new THREE.Vector3(...targetPreset.cortexColor), lerpRate);
-            currentTheme.synapseDeep.lerp(new THREE.Vector3(...targetPreset.synapseDeep), lerpRate);
-            currentTheme.synapseBright.lerp(new THREE.Vector3(...targetPreset.synapseBright), lerpRate);
+            currentTheme.deepWater.lerp(targetPreset.vDeepWater, lerpRate);
+            currentTheme.waterPrimary.lerp(targetPreset.vWaterPrimary, lerpRate);
+            currentTheme.waterAccent.lerp(targetPreset.vWaterAccent, lerpRate);
+            currentTheme.cortexColor.lerp(targetPreset.vCortexColor, lerpRate);
+            currentTheme.synapseDeep.lerp(targetPreset.vSynapseDeep, lerpRate);
+            currentTheme.synapseBright.lerp(targetPreset.vSynapseBright, lerpRate);
+
+            const targetBinauralActive = (binauralEnabled && isAudioPlaying) ? 1.0 : 0.0;
 
             // 3. Update & Render Viewport 1: CymaScope 24-LED Water Dish
             if (dishUniforms) {
@@ -1906,6 +2174,8 @@
                 dishUniforms.uSymmetryA.value = currentTheme.symA;
                 dishUniforms.uSymmetryB.value = currentTheme.symB;
                 dishUniforms.uRadialK.value = currentTheme.radialK;
+                dishUniforms.uBinauralActive.value += (targetBinauralActive - dishUniforms.uBinauralActive.value) * 0.08;
+                dishUniforms.uBinauralBeatHz.value = binauralBeatHz;
                 dishUniforms.uDeepWaterCol.value.copy(currentTheme.deepWater);
                 dishUniforms.uWaterPrimaryCol.value.copy(currentTheme.waterPrimary);
                 dishUniforms.uWaterAccentCol.value.copy(currentTheme.waterAccent);
@@ -1918,6 +2188,8 @@
                 neuralUniforms.uVocalEnv.value = currentVocalEnv;
                 neuralUniforms.uVowelMorph.value = currentVowelMorph;
                 neuralUniforms.uHighEnergy.value = highEnergy;
+                neuralUniforms.uBinauralActive.value += (targetBinauralActive - neuralUniforms.uBinauralActive.value) * 0.08;
+                neuralUniforms.uBinauralBeatHz.value = binauralBeatHz;
                 neuralUniforms.uSynapseDeep.value.copy(currentTheme.synapseDeep);
                 neuralUniforms.uSynapseBright.value.copy(currentTheme.synapseBright);
 
